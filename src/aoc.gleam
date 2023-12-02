@@ -14,6 +14,7 @@ fn day2() {
   let assert Ok(input) = simplifile.read("src/day2.txt")
   io.println("# day2")
   io.debug(#("part1", day2.part1(input)))
+  io.debug(#("part2", day2.part2(input)))
 }
 
 pub fn main() {
