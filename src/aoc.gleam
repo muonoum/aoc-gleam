@@ -1,6 +1,7 @@
 import day1
 import day2
 import day3
+import day3_take2
 import gleam/io
 import gleam/string
 import simplifile
@@ -23,7 +24,9 @@ fn day3() {
   let assert Ok(input) = simplifile.read("src/day3.txt")
   io.println("# day3")
   io.println("part1: " <> string.inspect(day3.part1(input)))
+  io.println("part1: " <> string.inspect(day3_take2.part1(input)))
   io.println("part2: " <> string.inspect(day3.part2(input)))
+  io.println("part2: " <> string.inspect(day3_take2.part2(input)))
 }
 
 pub fn main() {

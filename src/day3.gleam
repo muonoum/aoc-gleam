@@ -2,7 +2,7 @@ import gleam/int
 import gleam/list
 import gleam/string
 
-@external(erlang, "day3_ext", "match")
+@external(erlang, "glue", "match")
 fn match(string: String, pattern: String) -> List(List(#(Int, Int)))
 
 pub type Entity {
