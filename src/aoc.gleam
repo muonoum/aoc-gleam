@@ -2,6 +2,7 @@ import day1
 import day2
 import day3
 import day3_take2
+import gleam/erlang
 import gleam/io
 import gleam/string
 import simplifile
@@ -29,8 +30,18 @@ fn day3() {
   io.println("part2: " <> string.inspect(day3_take2.part2(input)))
 }
 
-pub fn main() {
+fn all() {
   day1()
   day2()
   day3()
+}
+
+pub fn main() {
+  case erlang.start_arguments() {
+    ["1"] -> day1()
+    ["2"] -> day2()
+    ["3"] -> day3()
+    [] -> all()
+    _ -> panic
+  }
 }
