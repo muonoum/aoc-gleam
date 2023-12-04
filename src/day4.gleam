@@ -1,3 +1,4 @@
+import gleam/bool
 import gleam/int
 import gleam/io
 import gleam/list
@@ -9,7 +10,7 @@ fn non_empty(line: String) -> Bool {
 }
 
 fn parse(input) {
-  use line <- list.map(
+  use line <- list.filter_map(
     string.split(input, on: "\n")
     |> list.filter(non_empty),
   )
@@ -19,29 +20,36 @@ fn parse(input) {
     string.split(id, " ")
     |> list.filter(non_empty)
 
-  let assert [have, want] =
+  let assert [want, have] =
     string.split(rest, "|")
     |> list.map(string.split(_, " "))
     |> list.map(list.filter(_, non_empty))
     |> list.map(list.filter_map(_, int.parse))
     |> list.map(set.from_list)
 
-  set.intersection(have, want)
-  |> set.to_list
-  |> list.fold(0, fn(sum, _) {
-    case sum {
-      0 -> 1
-      _ -> sum + sum
-    }
-  })
+  let wins =
+    set.intersection(want, have)
+    |> set.to_list
+
+  use <- bool.guard(when: wins == [], return: Error(Nil))
+  Ok(#(id, wins))
 }
 
 pub fn part1(input: String) {
-  parse(input)
-  |> int.sum
+  let cards = parse(input)
+
+  int.sum({
+    use #(_id, wins) <- list.map(cards)
+
+    list.fold(wins, 0, fn(sum, _) {
+      case sum {
+        0 -> 1
+        _ -> sum + sum
+      }
+    })
+  })
 }
 
-pub fn part2(input: String) {
-  parse(input)
+pub fn part2(_input: String) {
   Nil
 }
