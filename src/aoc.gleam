@@ -2,6 +2,7 @@ import day1
 import day2
 import day3
 import day3_take2
+import day4
 import gleam/erlang
 import gleam/io
 import gleam/string
@@ -30,10 +31,18 @@ fn day3() {
   io.println("part2: " <> string.inspect(day3_take2.part2(input)))
 }
 
+fn day4() {
+  let assert Ok(input) = simplifile.read("src/day4.txt")
+  io.println("# day4")
+  io.println("part1: " <> string.inspect(day4.part1(input)))
+  io.println("part2: " <> string.inspect(day4.part2(input)))
+}
+
 fn all() {
   day1()
   day2()
   day3()
+  day4()
 }
 
 pub fn main() {
@@ -41,6 +50,7 @@ pub fn main() {
     ["1"] -> day1()
     ["2"] -> day2()
     ["3"] -> day3()
+    ["4"] -> day4()
     [] -> all()
     _ -> panic
   }
