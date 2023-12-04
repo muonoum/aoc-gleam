@@ -43,7 +43,7 @@ pub fn part2(input: String) -> Int {
     use gear <- list.filter_map(list.filter(parts, is_gear))
     let assert Part(_, _position, area) = gear
 
-    try_square({
+    try_ratio({
       use number <- list.filter_map(numbers)
       let assert Number(part_number, position, _area) = number
 
@@ -77,7 +77,7 @@ fn parse(from input: String) -> List(List(Entity)) {
   }
 }
 
-fn try_square(pair: List(_)) -> Result(Int, Nil) {
+fn try_ratio(pair: List(_)) -> Result(Int, Nil) {
   case pair {
     [a, b] -> Ok(a * b)
     _ -> Error(Nil)
