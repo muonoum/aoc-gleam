@@ -5,9 +5,6 @@ import gleam/pair
 import gleam/set.{type Set}
 import gleam/string
 
-@external(erlang, "glue", "match")
-fn match(string: String, pattern: String) -> List(List(#(Int, Int)))
-
 pub type Position =
   #(Int, Int)
 
@@ -19,14 +16,20 @@ pub type Part {
   Part(String, Position, Set(Position))
 }
 
-pub type Space {
-  Space(List(Number), List(Part))
+pub type Schematic {
+  Schematic(List(Number), List(Part))
+}
+
+pub type Token {
+  Digits(String, Int)
+  Dot(Int)
+  Symbol(String, Int)
 }
 
 pub fn part1(input: String) -> Int {
   int.sum({
     list.flatten({
-      let Space(numbers, parts) = parse(input)
+      let Schematic(numbers, parts) = parse(input)
       use Number(part_number, _, area) <- list.map(numbers)
       use Part(_, position, _) <- list.filter_map(parts)
 
@@ -39,7 +42,7 @@ pub fn part1(input: String) -> Int {
 
 pub fn part2(input: String) -> Int {
   int.sum({
-    let Space(numbers, parts) = parse(input)
+    let Schematic(numbers, parts) = parse(input)
     use Part(_, _, area) <- list.filter_map(list.filter(parts, is_gear))
 
     try_ratio({
@@ -51,36 +54,55 @@ pub fn part2(input: String) -> Int {
   })
 }
 
-fn parse(from input: String) -> Space {
-  use space, string, row <- list.index_fold(
-    string.split(input, on: "\n")
-    |> list.filter(non_empty),
-    from: Space([], []),
-  )
+fn parse(from input: String) -> Schematic {
+  use state, tokens, row <- list.index_fold(from: Schematic([], []), over: {
+    use string <- list.map(
+      string.split(input, on: "\n")
+      |> list.filter(non_empty),
+    )
 
-  let pattern = "(?<N>\\d+)(?=[^\\d]|$)|(?<P>[^\\d.])"
-  use Space(numbers, parts), match <- list.fold(
-    match(string, pattern),
-    from: space,
-  )
+    string.to_graphemes(string)
+    |> list.index_fold([], parse_grapheme)
+    |> list.reverse
+  })
 
-  case match {
-    [#(start, length), #(-1, _)] if start >= 0 -> {
-      let assert Ok(value) = int.parse(string.slice(string, start, length))
-      let position = position(row, start, length)
-      let area = area(row, start, length)
-      let numbers = [Number(value, position, area), ..numbers]
-      Space(numbers, parts)
+  use Schematic(numbers, parts), token <- list.fold(tokens, state)
+
+  case token {
+    Dot(_) -> Schematic(numbers, parts)
+
+    Digits(digits, column) -> {
+      let assert Ok(number) = int.parse(digits)
+      let length = string.length(digits)
+      let position = position(row, column, length)
+      let area = area(row, column, length)
+      let numbers = [Number(number, position, area), ..numbers]
+      Schematic(numbers, parts)
     }
 
-    [#(-1, _), #(start, length)] if start >= 0 -> {
-      let symbol = string.slice(string, start, length)
-      let area = area(row, start, length)
-      let parts = [Part(symbol, #(start, row), area), ..parts]
-      Space(numbers, parts)
+    Symbol(symbol, column) -> {
+      let area = area(row, column, 1)
+      let parts = [Part(symbol, #(column, row), area), ..parts]
+      Schematic(numbers, parts)
     }
+  }
+}
 
-    _else -> panic
+fn parse_grapheme(tokens: List(Token), grapheme: String, column: Int) {
+  case grapheme {
+    "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ->
+      append_digit(tokens, grapheme, column)
+    "." -> [Dot(column), ..tokens]
+    symbol -> [Symbol(symbol, column), ..tokens]
+  }
+}
+
+fn append_digit(tokens: List(Token), digit: String, column: Int) {
+  case tokens {
+    [Digits(digits, column), ..tokens] -> {
+      [Digits(digits <> digit, column), ..tokens]
+    }
+    _else -> [Digits(digit, column), ..tokens]
   }
 }
 
@@ -102,19 +124,19 @@ fn is_gear(part: Part) -> Bool {
   }
 }
 
-fn position(row, start, length) -> Set(Position) {
-  list.range(start, start + length - 1)
+fn position(row, column, length) -> Set(Position) {
+  list.range(column, column + length - 1)
   |> list.map(pair.new(_, row))
   |> set.from_list
 }
 
-fn area(row, start, length) -> Set(Position) {
+fn area(row, column, length) -> Set(Position) {
   set.from_list({
     list.flatten([
-      list.range(start - 1, start + length)
+      list.range(column - 1, column + length)
       |> list.map(pair.new(_, row - 1)),
-      [#(start - 1, row), #(start + length, row)],
-      list.range(start - 1, start + length)
+      [#(column - 1, row), #(column + length, row)],
+      list.range(column - 1, column + length)
       |> list.map(pair.new(_, row + 1)),
     ])
   })
