@@ -37,11 +37,10 @@ fn day_order(a, b) {
 
 pub fn main() {
   case erlang.start_arguments() {
-    ["1"] -> [day1()]
-    ["2"] -> [day2()]
-    ["3"] -> [day3()]
-    ["4"] -> [day4()]
-
+    ["1"] -> [io.debug(day1())]
+    ["2"] -> [io.debug(day2())]
+    ["3"] -> [io.debug(day3())]
+    ["4"] -> [io.debug(day4())]
     [] -> {
       use day <- list.map(
         list.map([day1, day2, day3, day4], task.async)
