@@ -20,7 +20,7 @@ pub type Part {
 }
 
 pub type Space {
-  Space(numbers: List(Number), parts: List(Part))
+  Space(List(Number), List(Part))
 }
 
 pub fn part1(input: String) -> Int {
@@ -55,10 +55,10 @@ fn parse(from input: String) -> Space {
   use space, string, row <- list.index_fold(
     over: string.split(input, on: "\n")
     |> list.filter(non_empty),
-    from: Space(numbers: [], parts: []),
+    from: Space([], []),
   )
 
-  use space, match <- list.fold(
+  use Space(numbers, parts), match <- list.fold(
     over: match(string, "(?<N>\\d+)(?=[^\\d]|$)|(?<P>[^\\d.])"),
     from: space,
   )
@@ -68,15 +68,15 @@ fn parse(from input: String) -> Space {
       let assert Ok(value) = int.parse(string.slice(string, start, length))
       let position = position(row, start, length)
       let area = area(row, start, length)
-      let numbers = [Number(value, position, area), ..space.numbers]
-      Space(..space, numbers: numbers)
+      let numbers = [Number(value, position, area), ..numbers]
+      Space(numbers, parts)
     }
 
     [#(-1, _), #(start, length)] if start >= 0 -> {
       let symbol = string.slice(string, start, length)
       let area = area(row, start, length)
-      let parts = [Part(symbol, #(start, row), area), ..space.parts]
-      Space(..space, parts: parts)
+      let parts = [Part(symbol, #(start, row), area), ..parts]
+      Space(numbers, parts)
     }
 
     _else -> panic
