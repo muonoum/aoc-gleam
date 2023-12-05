@@ -11,22 +11,24 @@ fn match(string: String, pattern: String) -> List(List(#(Int, Int)))
 pub type Position =
   #(Int, Int)
 
-pub type Entity {
+pub type Number {
   Number(Int, Set(Position), Set(Position))
+}
+
+pub type Part {
   Part(String, Position, Set(Position))
+}
+
+pub type Space {
+  Space(numbers: List(Number), parts: List(Part))
 }
 
 pub fn part1(input: String) -> Int {
   int.sum({
     list.flatten({
-      let #(numbers, parts) =
-        list.flatten(parse(input))
-        |> list.partition(is_number)
-
-      use number <- list.map(numbers)
-      use part <- list.filter_map(parts)
-      let assert Number(part_number, _position, area) = number
-      let assert Part(_symbol, position, _area) = part
+      let Space(numbers, parts) = parse(input)
+      use Number(part_number, _, area) <- list.map(numbers)
+      use Part(_, position, _) <- list.filter_map(parts)
 
       let contained = set.contains(area, position)
       use <- bool.guard(!contained, Error(Nil))
@@ -37,17 +39,11 @@ pub fn part1(input: String) -> Int {
 
 pub fn part2(input: String) -> Int {
   int.sum({
-    let #(numbers, parts) =
-      list.flatten(parse(input))
-      |> list.partition(is_number)
-
-    use gear <- list.filter_map(list.filter(parts, is_gear))
-    let assert Part(_, _position, area) = gear
+    let Space(numbers, parts) = parse(input)
+    use Part(_, _, area) <- list.filter_map(list.filter(parts, is_gear))
 
     try_ratio({
-      use number <- list.filter_map(numbers)
-      let assert Number(part_number, position, _area) = number
-
+      use Number(part_number, position, _) <- list.filter_map(numbers)
       let adjecent = set.to_list(set.intersection(area, position))
       use <- bool.guard(adjecent == [], Error(Nil))
       Ok(part_number)
@@ -55,23 +51,32 @@ pub fn part2(input: String) -> Int {
   })
 }
 
-fn parse(from input: String) -> List(List(Entity)) {
-  use row, line <- list.index_map(
-    string.split(input, on: "\n")
+fn parse(from input: String) -> Space {
+  use space, string, row <- list.index_fold(
+    over: string.split(input, on: "\n")
     |> list.filter(non_empty),
+    from: Space(numbers: [], parts: []),
   )
 
-  use match <- list.map(match(line, "(?<N>\\d+)(?=[^\\d]|$)|(?<P>[^\\d.])"))
+  use space, match <- list.fold(
+    over: match(string, "(?<N>\\d+)(?=[^\\d]|$)|(?<P>[^\\d.])"),
+    from: space,
+  )
 
   case match {
     [#(start, length), #(-1, _)] if start >= 0 -> {
-      let assert Ok(value) = int.parse(string.slice(line, start, length))
-      Number(value, position(row, start, length), area(row, start, length))
+      let assert Ok(value) = int.parse(string.slice(string, start, length))
+      let position = position(row, start, length)
+      let area = area(row, start, length)
+      let numbers = [Number(value, position, area), ..space.numbers]
+      Space(..space, numbers: numbers)
     }
 
     [#(-1, _), #(start, length)] if start >= 0 -> {
-      let symbol = string.slice(line, start, length)
-      Part(symbol, #(start, row), area(row, start, length))
+      let symbol = string.slice(string, start, length)
+      let area = area(row, start, length)
+      let parts = [Part(symbol, #(start, row), area), ..space.parts]
+      Space(..space, parts: parts)
     }
 
     _else -> panic
@@ -89,15 +94,8 @@ fn non_empty(line: String) -> Bool {
   line != ""
 }
 
-fn is_number(entity: Entity) -> Bool {
-  case entity {
-    Number(..) -> True
-    _else -> False
-  }
-}
-
-fn is_gear(entity: Entity) -> Bool {
-  case entity {
+fn is_gear(part: Part) -> Bool {
+  case part {
     Part("*", ..) -> True
     _else -> False
   }
