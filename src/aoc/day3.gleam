@@ -53,13 +53,14 @@ pub fn part2(input: String) -> Int {
 
 fn parse(from input: String) -> Space {
   use space, string, row <- list.index_fold(
-    over: string.split(input, on: "\n")
+    string.split(input, on: "\n")
     |> list.filter(non_empty),
     from: Space([], []),
   )
 
+  let pattern = "(?<N>\\d+)(?=[^\\d]|$)|(?<P>[^\\d.])"
   use Space(numbers, parts), match <- list.fold(
-    over: match(string, "(?<N>\\d+)(?=[^\\d]|$)|(?<P>[^\\d.])"),
+    match(string, pattern),
     from: space,
   )
 
