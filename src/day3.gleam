@@ -1,149 +1,122 @@
+import gleam/bool
 import gleam/int
 import gleam/list
+import gleam/pair
+import gleam/set.{type Set}
 import gleam/string
 
 @external(erlang, "glue", "match")
 fn match(string: String, pattern: String) -> List(List(#(Int, Int)))
 
+pub type Position =
+  #(Int, Int)
+
 pub type Entity {
-  Number(start: Int, end: Int, number: Int)
-  Part(index: Int, symbol: String)
+  Number(Int, Set(Position), Set(Position))
+  Part(String, Position, Set(Position))
 }
 
-fn is_number(entity: Entity) -> Bool {
-  case entity {
-    Number(..) -> True
-    _ -> False
-  }
+pub fn part1(input: String) -> Int {
+  int.sum({
+    list.flatten({
+      let #(numbers, parts) =
+        list.flatten(parse(input))
+        |> list.partition(is_number)
+
+      use number <- list.map(numbers)
+      use part <- list.filter_map(parts)
+      let assert Number(part_number, _position, area) = number
+      let assert Part(_symbol, position, _area) = part
+
+      let contained = set.contains(area, position)
+      use <- bool.guard(!contained, Error(Nil))
+      Ok(part_number)
+    })
+  })
 }
 
-fn is_gear(entity: Entity) -> Bool {
-  case entity {
-    Part(symbol: "*", ..) -> True
-    _ -> False
-  }
+pub fn part2(input: String) -> Int {
+  int.sum({
+    let #(numbers, parts) =
+      list.flatten(parse(input))
+      |> list.partition(is_number)
+
+    use gear <- list.filter_map(list.filter(parts, is_gear))
+    let assert Part(_, _position, area) = gear
+
+    try_ratio({
+      use number <- list.filter_map(numbers)
+      let assert Number(part_number, position, _area) = number
+
+      let adjecent = set.to_list(set.intersection(area, position))
+      use <- bool.guard(adjecent == [], Error(Nil))
+      Ok(part_number)
+    })
+  })
 }
 
-pub fn part1(input: String) {
-  parse(input)
-  |> check1
-  |> list.flatten
-  |> int.sum
-}
-
-pub fn part2(input: String) {
-  parse(input)
-  |> check2
-  |> list.flatten
-  |> int.sum
-}
-
-fn parse(input: String) -> List(List(Entity)) {
-  use line <- list.map(
+fn parse(from input: String) -> List(List(Entity)) {
+  use row, line <- list.index_map(
     string.split(input, on: "\n")
-    |> list.filter(fn(line) { line != "" }),
+    |> list.filter(non_empty),
   )
 
   use match <- list.map(match(line, "(?<N>\\d+)(?=[^\\d]|$)|(?<P>[^\\d.])"))
 
   case match {
     [#(start, length), #(-1, _)] if start >= 0 -> {
-      let assert Ok(number) =
-        string.slice(line, start, length)
-        |> int.parse
-      Number(start: start, end: start + length - 1, number: number)
+      let assert Ok(value) = int.parse(string.slice(line, start, length))
+      Number(value, position(row, start, length), area(row, start, length))
     }
 
-    [#(-1, _), #(start, length)] if start >= 0 ->
-      string.slice(line, start, length)
-      |> Part(index: start, symbol: _)
+    [#(-1, _), #(start, length)] if start >= 0 -> {
+      let symbol = string.slice(line, start, length)
+      Part(symbol, #(start, row), area(row, start, length))
+    }
 
-    _ -> panic
+    _else -> panic
   }
 }
 
-fn check1(lines: List(List(Entity))) {
-  use #(first, second) <- list.map(list.window_by_2(lines))
-
-  let #(first_numbers, parts1) = list.partition(first, is_number)
-  let #(second_numbers, parts2) = list.partition(second, is_number)
-
-  let first_numbers = {
-    use number <- list.filter_map(first_numbers)
-    let assert Number(start, end, part_number) = number
-    let curr =
-      list.any(parts1, fn(part) {
-        let assert Part(index, _) = part
-        index == start - 1 || index == end + 1
-      })
-    let next =
-      list.any(parts2, fn(part) {
-        let assert Part(index, _) = part
-        index >= start - 1 && index <= end + 1
-      })
-
-    case curr || next {
-      True -> Ok(part_number)
-      False -> Error(Nil)
-    }
-  }
-
-  let second_numbers = {
-    use number <- list.filter_map(second_numbers)
-    let assert Number(start, end, part_number) = number
-    let prev =
-      list.any(parts1, fn(part) {
-        let assert Part(index, _) = part
-        index >= start - 1 && index <= end + 1
-      })
-
-    case prev {
-      True -> Ok(part_number)
-      False -> Error(Nil)
-    }
-  }
-
-  list.flatten([first_numbers, second_numbers])
-}
-
-fn check2(lines: List(List(Entity))) -> List(List(Int)) {
-  use line <- list.map(list.window(lines, 3))
-  let assert [prev, curr, next] = line
-
-  let #(prev, _) = list.partition(prev, is_number)
-  let #(curr, parts) = list.partition(curr, is_number)
-  let #(next, _) = list.partition(next, is_number)
-
-  use gear <- list.filter_map(list.filter(parts, is_gear))
-  let assert Part(index, "*") = gear
-
-  let prev =
-    list.filter_map(prev, fn(num) {
-      let assert Number(start, end, part_number) = num
-      case index >= start - 1 && index <= end + 1 {
-        True -> Ok(part_number)
-        False -> Error(Nil)
-      }
-    })
-  let curr =
-    list.filter_map(curr, fn(num) {
-      let assert Number(start, end, part_number) = num
-      case index == start - 1 || index == end + 1 {
-        True -> Ok(part_number)
-        False -> Error(Nil)
-      }
-    })
-  let next =
-    list.filter_map(next, fn(num) {
-      let assert Number(start, end, part_number) = num
-      case index >= start - 1 && index <= end + 1 {
-        True -> Ok(part_number)
-        False -> Error(Nil)
-      }
-    })
-
-  case list.flatten([prev, curr, next]) {
+fn try_ratio(pair: List(Int)) -> Result(Int, Nil) {
+  case pair {
     [a, b] -> Ok(a * b)
     _ -> Error(Nil)
   }
+}
+
+fn non_empty(line: String) -> Bool {
+  line != ""
+}
+
+fn is_number(entity: Entity) -> Bool {
+  case entity {
+    Number(..) -> True
+    _else -> False
+  }
+}
+
+fn is_gear(entity: Entity) -> Bool {
+  case entity {
+    Part("*", ..) -> True
+    _else -> False
+  }
+}
+
+fn position(row, start, length) -> Set(Position) {
+  list.range(start, start + length - 1)
+  |> list.map(pair.new(_, row))
+  |> set.from_list
+}
+
+fn area(row, start, length) -> Set(Position) {
+  set.from_list({
+    list.flatten([
+      list.range(start - 1, start + length)
+      |> list.map(pair.new(_, row - 1)),
+      [#(start - 1, row), #(start + length, row)],
+      list.range(start - 1, start + length)
+      |> list.map(pair.new(_, row + 1)),
+    ])
+  })
 }

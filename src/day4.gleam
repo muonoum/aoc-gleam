@@ -1,6 +1,5 @@
 import gleam/bool
 import gleam/int
-import gleam/io
 import gleam/list
 import gleam/set
 import gleam/string
@@ -16,22 +15,24 @@ fn parse(input) {
   )
 
   let assert [id, rest] = string.split(line, ":")
-  let assert [_, _id] =
+  let assert [_, id] =
     string.split(id, " ")
     |> list.filter(non_empty)
 
-  let assert [want, have] =
-    string.split(rest, "|")
-    |> list.map(string.split(_, " "))
-    |> list.map(list.filter(_, non_empty))
-    |> list.map(list.filter_map(_, int.parse))
-    |> list.map(set.from_list)
+  let assert [want, have] = {
+    use part <- list.map(string.split(rest, "|"))
+
+    string.split(part, " ")
+    |> list.filter(non_empty)
+    |> list.filter_map(int.parse)
+    |> set.from_list
+  }
 
   let wins =
     set.intersection(want, have)
     |> set.to_list
 
-  use <- bool.guard(when: wins == [], return: Error(Nil))
+  use <- bool.guard(wins == [], Error(Nil))
   Ok(#(id, wins))
 }
 
