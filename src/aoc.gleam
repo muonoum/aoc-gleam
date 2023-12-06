@@ -30,7 +30,7 @@ fn day3() {
 
 fn day4() {
   let assert Ok(input) = simplifile.read("inputs/day4.txt")
-  Day(4, day4.part1(input), -1)
+  Day(4, day4.part1(input), day4.part2(input))
 }
 
 fn day_order(a, b) {
