@@ -1,118 +1,121 @@
-import gleam/bool
 import gleam/int
 import gleam/list
+import gleam/pair
 import gleam/string
 
-pub type Range {
-  Range(source: Int, destination: Int, length: Int)
+pub type Almanac =
+  #(List(Int), List(List(Map)))
+
+pub type Map {
+  Map(range: Range, shift: Int)
 }
 
-pub type Map =
-  List(Range)
-
-pub type State {
-  State(seeds: List(Int), maps: List(Map))
+pub type Range {
+  Range(start: Int, end: Int)
 }
 
 pub fn part1(input: String) -> Int {
-  let state = parse(input)
+  let #(seeds, maps) = parse(input)
 
-  let assert Ok(location) =
-    list.map(state.seeds, process_seed(_, state.maps))
-    |> list.reduce(int.min)
-
-  location
+  process(maps, {
+    use seed <- list.map(seeds)
+    Range(seed, seed + 1)
+  })
 }
 
-pub fn part2(_input: String) -> Int {
-  -1
+pub fn part2(input: String) -> Int {
+  let #(seeds, maps) = parse(input)
+
+  process(maps, {
+    use range <- list.map(list.sized_chunk(seeds, 2))
+    let assert [start, length] = range
+    Range(start, start + length)
+  })
 }
 
-fn process_seed(seed: Int, maps: List(List(Range))) {
-  use number, ranges <- list.fold(maps, seed)
-  use number, range <- list.fold_until(ranges, number)
+fn process(maps: List(List(Map)), ranges: List(Range)) -> Int {
+  minimum({
+    use range <- list.map({
+      use ranges, step <- list.fold(maps, ranges)
+      let ranges = shift(ranges, step)
+      use Range(start, end) <- list.filter(ranges)
+      start < end
+    })
 
-  let found = find(number, range)
-  case number == found {
-    False -> list.Stop(found)
-    True -> list.Continue(number)
+    range.start
+  })
+}
+
+fn shift(ranges: List(Range), step: List(Map)) -> List(Range) {
+  use Range(start, end) <- list.flat_map(ranges)
+
+  let #(start, ranges) = {
+    use #(start, ranges), Map(map, shift) <- list.fold(step, { #(start, []) })
+
+    let ranges = [
+      Range(start, int.min(map.start, end)),
+      Range(int.max(map.start, start) + shift, int.min(map.end, end) + shift),
+      ..ranges
+    ]
+
+    let next = int.max(start, int.min(map.end, end))
+    #(next, ranges)
   }
+
+  [Range(start, end), ..ranges]
 }
 
-fn find(number: Int, range: Range) -> Int {
-  let Range(source_start, dest_start, length) = range
-  let source_end = source_start + length
-  let dest_end = dest_start + length
-  use <- bool.guard(number < source_start || number > source_end, number)
-
-  let assert Ok(dest_mid) = int.floor_divide({ dest_start + dest_end }, 2)
-  let assert Ok(length) = int.floor_divide(length, 2)
-  let assert Ok(source_mid) = int.floor_divide({ source_start + source_end }, 2)
-
-  use <- bool.guard(
-    source_mid < number,
-    find(number, Range(source_mid + 1, dest_mid + 1, length + 1)),
-  )
-
-  use <- bool.guard(
-    source_mid > number,
-    find(number, Range(source_start, dest_start, length - 1)),
-  )
-
-  dest_mid
+fn minimum(ranges: List(Int)) -> Int {
+  let assert Ok(minimum) = list.reduce(ranges, int.min)
+  minimum
 }
 
-fn parse(input: String) {
-  use <- reverse_maps
+fn parse(input: String) -> Almanac {
+  use <- sort_and_reverse
   let lines = string.split(input, "\n")
-  let state = State(seeds: [], maps: [])
-  use state, line <- list.fold(lines, state)
+  use #(seeds, maps), line <- list.fold(lines, #([], []))
 
   case line {
-    "seeds: " <> seeds -> parse_seeds(state, seeds)
+    "seeds: " <> seeds -> {
+      let seeds =
+        string.split(seeds, " ")
+        |> list.filter_map(int.parse)
 
-    "seed-to-soil map:" -> new_map(state)
-    "soil-to-fertilizer map:" -> new_map(state)
-    "fertilizer-to-water map:" -> new_map(state)
-    "water-to-light map:" -> new_map(state)
-    "light-to-temperature map:" -> new_map(state)
-    "temperature-to-humidity map:" -> new_map(state)
-    "humidity-to-location map:" -> new_map(state)
+      #(seeds, maps)
+    }
 
-    "" -> state
+    "seed-to-soil map:"
+    | "soil-to-fertilizer map:"
+    | "fertilizer-to-water map:"
+    | "water-to-light map:"
+    | "light-to-temperature map:"
+    | "temperature-to-humidity map:"
+    | "humidity-to-location map:" -> {
+      #(seeds, [[], ..maps])
+    }
 
-    numbers -> add_range(state, numbers)
+    "" -> #(seeds, maps)
+
+    numbers -> {
+      let assert [destination, source, length] =
+        string.split(numbers, " ")
+        |> list.filter_map(int.parse)
+
+      let assert [step, ..maps] = maps
+      let range = Range(source, source + length)
+      let map = Map(range, destination - source)
+
+      #(seeds, [[map, ..step], ..maps])
+    }
   }
 }
 
-fn reverse_maps(to_state: fn() -> State) -> State {
-  let state = to_state()
-  let maps =
-    list.map(state.maps, list.reverse)
-    |> list.reverse
-  State(..state, maps: maps)
-}
+fn sort_and_reverse(almanac: fn() -> Almanac) -> Almanac {
+  use maps <- pair.map_second(almanac())
 
-fn new_map(state) {
-  State(..state, maps: [[], ..state.maps])
-}
-
-fn parse_seeds(state, string) {
-  let seeds =
-    string.split(string, " ")
-    |> list.filter_map(int.parse)
-
-  State(..state, seeds: seeds)
-}
-
-fn add_range(state: State, numbers: String) -> State {
-  let assert [destination, source, length] =
-    string.split(numbers, " ")
-    |> list.filter_map(int.parse)
-
-  let assert [map, ..maps] = state.maps
-  let range = Range(source, destination, length)
-  let maps = [[range, ..map], ..maps]
-
-  State(..state, maps: maps)
+  list.reverse({
+    use map <- list.map(maps)
+    use Map(Range(a, _), _), Map(Range(b, _), _) <- list.sort(map)
+    int.compare(a, b)
+  })
 }
