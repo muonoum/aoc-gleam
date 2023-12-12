@@ -3,6 +3,7 @@ import aoc/day2
 import aoc/day3
 import aoc/day4
 import aoc/day5
+import aoc/day6
 import aoc/day8
 import gleam/erlang
 import gleam/int
@@ -40,6 +41,11 @@ fn day5() {
   Day(5, day5.part1(input), day5.part2(input))
 }
 
+fn day6() {
+  let assert Ok(input) = simplifile.read("inputs/day6.txt")
+  Day(6, day6.part1(input), day6.part2(input))
+}
+
 fn day8() {
   let assert Ok(input) = simplifile.read("inputs/day8.txt")
   Day(8, day8.part1(input), day8.part2(input))
@@ -58,10 +64,11 @@ pub fn main() {
     ["3"] -> [io.debug(day3())]
     ["4"] -> [io.debug(day4())]
     ["5"] -> [io.debug(day5())]
+    ["6"] -> [io.debug(day6())]
     ["8"] -> [io.debug(day8())]
     [] -> {
       use day <- list.map(
-        list.map([day1, day2, day3, day4, day5, day8], task.async)
+        list.map([day1, day2, day3, day4, day5, day6, day8], task.async)
         |> list.map(task.await_forever)
         |> list.sort(day_order),
       )
