@@ -5,6 +5,8 @@ import aoc/day4
 import aoc/day5
 import aoc/day6
 import aoc/day8
+import aoc/day9
+import gleam/dict
 import gleam/erlang
 import gleam/int
 import gleam/io
@@ -51,6 +53,11 @@ fn day8() {
   Day(8, day8.part1(input), day8.part2(input))
 }
 
+fn day9() {
+  let assert Ok(input) = simplifile.read("inputs/day9.txt")
+  Day(9, day9.part1(input), day9.part2(input))
+}
+
 fn day_order(a, b) {
   case a, b {
     Day(a, _, _), Day(b, _, _) -> int.compare(a, b)
@@ -58,17 +65,27 @@ fn day_order(a, b) {
 }
 
 pub fn main() {
+  let days =
+    dict.from_list([
+      #("1", day1),
+      #("2", day2),
+      #("3", day3),
+      #("4", day4),
+      #("5", day5),
+      #("6", day6),
+      #("8", day8),
+      #("9", day9),
+    ])
+
   case erlang.start_arguments() {
-    ["1"] -> [io.debug(day1())]
-    ["2"] -> [io.debug(day2())]
-    ["3"] -> [io.debug(day3())]
-    ["4"] -> [io.debug(day4())]
-    ["5"] -> [io.debug(day5())]
-    ["6"] -> [io.debug(day6())]
-    ["8"] -> [io.debug(day8())]
+    [day] -> {
+      let assert Ok(day) = dict.get(days, day)
+      [io.debug(day())]
+    }
+
     [] -> {
       use day <- list.map(
-        list.map([day1, day2, day3, day4, day5, day6, day8], task.async)
+        list.map(dict.values(days), task.async)
         |> list.map(task.await_forever)
         |> list.sort(day_order),
       )
