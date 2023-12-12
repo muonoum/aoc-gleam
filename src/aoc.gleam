@@ -18,74 +18,35 @@ pub type Day {
   Day(Int, Int, Int)
 }
 
-fn day1() {
-  let assert Ok(input) = simplifile.read("inputs/day1.txt")
-  Day(1, day1.part1(input), day1.part2(input))
-}
-
-fn day2() {
-  let assert Ok(input) = simplifile.read("inputs/day2.txt")
-  Day(2, day2.part1(input), day2.part2(input))
-}
-
-fn day3() {
-  let assert Ok(input) = simplifile.read("inputs/day3.txt")
-  Day(3, day3.part1(input), day3.part2(input))
-}
-
-fn day4() {
-  let assert Ok(input) = simplifile.read("inputs/day4.txt")
-  Day(4, day4.part1(input), day4.part2(input))
-}
-
-fn day5() {
-  let assert Ok(input) = simplifile.read("inputs/day5.txt")
-  Day(5, day5.part1(input), day5.part2(input))
-}
-
-fn day6() {
-  let assert Ok(input) = simplifile.read("inputs/day6.txt")
-  Day(6, day6.part1(input), day6.part2(input))
-}
-
-fn day8() {
-  let assert Ok(input) = simplifile.read("inputs/day8.txt")
-  Day(8, day8.part1(input), day8.part2(input))
-}
-
-fn day9() {
-  let assert Ok(input) = simplifile.read("inputs/day9.txt")
-  Day(9, day9.part1(input), day9.part2(input))
-}
-
-fn day_order(a, b) {
-  case a, b {
-    Day(a, _, _), Day(b, _, _) -> int.compare(a, b)
-  }
-}
-
 pub fn main() {
   let days =
     dict.from_list([
-      #("1", day1),
-      #("2", day2),
-      #("3", day3),
-      #("4", day4),
-      #("5", day5),
-      #("6", day6),
-      #("8", day8),
-      #("9", day9),
+      #(1, #(day1.part1, day1.part2, "inputs/day1.txt")),
+      #(2, #(day2.part1, day2.part2, "inputs/day2.txt")),
+      #(3, #(day3.part1, day3.part2, "inputs/day3.txt")),
+      #(4, #(day4.part1, day4.part2, "inputs/day4.txt")),
+      #(5, #(day5.part1, day5.part2, "inputs/day5.txt")),
+      #(6, #(day6.part1, day6.part2, "inputs/day6.txt")),
+      #(8, #(day8.part1, day8.part2, "inputs/day8.txt")),
+      #(9, #(day9.part1, day9.part2, "inputs/day9.txt")),
     ])
 
   case erlang.start_arguments() {
     [day] -> {
-      let assert Ok(day) = dict.get(days, day)
-      [io.debug(day())]
+      let assert Ok(day) = int.parse(day)
+      let assert Ok(#(part1, part2, input)) = dict.get(days, day)
+      let assert Ok(input) = simplifile.read(input)
+      [io.debug(Day(day, part1(input), part2(input)))]
     }
 
     [] -> {
       use day <- list.map(
-        list.map(dict.values(days), task.async)
+        dict.values({
+          use day, #(part1, part2, input) <- dict.map_values(days)
+          let assert Ok(input) = simplifile.read(input)
+          use <- task.async
+          Day(day, part1(input), part2(input))
+        })
         |> list.map(task.await_forever)
         |> list.sort(day_order),
       )
@@ -95,4 +56,14 @@ pub fn main() {
 
     _ -> panic
   }
+}
+
+fn day_order(a, b) {
+  case a, b {
+    Day(a, _, _), Day(b, _, _) -> int.compare(a, b)
+  }
+}
+
+pub fn noop(_) {
+  -1
 }
