@@ -4,7 +4,14 @@ import gleam/string
 
 pub fn part1(input: String) -> Int {
   int.product({
-    use #(time, record) <- list.map(parse(input))
+    let #(times, records) = parse(input)
+
+    use #(time, record) <- list.map({
+      use #(time, record) <- list.map(list.zip(times, records))
+      let assert Ok(time) = int.parse(time)
+      let assert Ok(record) = int.parse(record)
+      #(time, record)
+    })
 
     list.length({
       use held <- list.filter_map(list.range(0, time))
@@ -17,8 +24,19 @@ pub fn part1(input: String) -> Int {
   })
 }
 
-pub fn part2(_input: String) -> Int {
-  -1
+pub fn part2(input: String) -> Int {
+  let #(times, records) = parse(input)
+  let assert Ok(time) = int.parse(string.join(times, ""))
+  let assert Ok(record) = int.parse(string.join(records, ""))
+
+  list.length({
+    use held <- list.filter_map(list.range(0, time))
+
+    case held * { time - held } {
+      distance if distance > record -> Ok(distance)
+      _ -> Error(Nil)
+    }
+  })
 }
 
 fn parse(input) {
@@ -34,12 +52,11 @@ fn parse(input) {
     }
   }
 
-  list.zip(times, records)
+  #(times, records)
 }
 
 fn numbers(v) {
   string.split(v, " ")
   |> list.map(string.trim)
   |> list.filter(fn(v) { v != "" })
-  |> list.filter_map(int.parse)
 }
