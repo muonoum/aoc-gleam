@@ -1,6 +1,7 @@
 import gleam/bool
-import gleam/int
+import gleam/int as _
 import gleam/io
+import gleam/iterator as _
 import gleam/list
 import gleam/string
 
@@ -12,7 +13,7 @@ pub fn part1(input: String) -> Int {
 
 pub fn part2(input: String) -> Int {
   parse(input)
-  io.debug
+  |> io.debug
   -1
 }
 
