@@ -5,17 +5,15 @@ import gleam/list
 import gleam/pair
 import gleam/string
 
-pub fn part1(input: String) -> Int {
-  let #(directions, map) = parse(input)
-
+fn navigate(network, start, directions) -> Int {
   pair.first({
     use #(count, key), direction <- iterator.fold_until(
       iterator.from_list(directions)
       |> iterator.cycle,
-      #(0, "AAA"),
+      #(0, start),
     )
 
-    case direction, dict.get(map, key) {
+    case direction, dict.get(network, key) {
       "L", Ok(#("ZZZ", _)) -> list.Stop(#(count + 1, key))
       "R", Ok(#(_, "ZZZ")) -> list.Stop(#(count + 1, key))
       "L", Ok(#(next, _)) -> list.Continue(#(count + 1, next))
@@ -23,6 +21,11 @@ pub fn part1(input: String) -> Int {
       _, _ -> panic
     }
   })
+}
+
+pub fn part1(input: String) -> Int {
+  let #(directions, network) = parse(input)
+  navigate(network, "AAA", directions)
 }
 
 pub fn part2(_input: String) -> Int {
@@ -34,9 +37,9 @@ fn parse(input) {
   let assert [directions, ..lines] = lines
   let directions = string.split(directions, "")
 
-  let map = {
-    use map, line <- list.fold(lines, dict.new())
-    use <- bool.guard(line == "", map)
+  let network = {
+    use network, line <- list.fold(lines, dict.new())
+    use <- bool.guard(line == "", network)
 
     let assert [key, pair] =
       string.split(line, "=")
@@ -48,8 +51,8 @@ fn parse(input) {
       |> string.split(",")
       |> list.map(string.trim)
 
-    dict.insert(map, key, #(left, right))
+    dict.insert(network, key, #(left, right))
   }
 
-  #(directions, map)
+  #(directions, network)
 }
