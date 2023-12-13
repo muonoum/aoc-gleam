@@ -1,7 +1,5 @@
-*.beam
-*.ez
 build
 erl_crash.dump
-/temp
+/data
 /notes
-/inputs
+/temp
