@@ -88,7 +88,7 @@ fn hand_score(hand: List(String)) {
 
 fn hand_number(hand: List(String)) -> Int {
   let assert Ok(number) =
-    list.map(hand, card_number1)
+    list.map(hand, card_number)
     |> int.undigits(14)
 
   number

@@ -62,13 +62,14 @@ fn collect(cards: List(Card), originals: List(Card), deck: List(Card)) {
 fn copies(card: Card, originals: List(Card)) {
   let Card(id, want, have) = card
 
-  list.split(originals, id)
-  |> pair.second
-  |> list.split(
-    set.intersection(want, have)
-    |> set.size,
-  )
-  |> pair.first
+  pair.first({
+    list.split(originals, id)
+    |> pair.second
+    |> list.split(
+      set.intersection(want, have)
+      |> set.size,
+    )
+  })
 }
 
 fn non_empty(line: String) -> Bool {
