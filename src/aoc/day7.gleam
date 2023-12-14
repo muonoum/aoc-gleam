@@ -45,7 +45,7 @@ pub fn part2(_input: String) -> Int {
   -1
 }
 
-fn parse(input) {
+fn parse(input: String) -> List(#(List(String), Int)) {
   let lines = string.split(input, "\n")
   use line <- list.filter_map(lines)
   use <- bool.guard(line == "", Error(Nil))
@@ -57,7 +57,7 @@ fn parse(input) {
   Ok(#(hand, bid))
 }
 
-fn hand_score(hand: List(String)) {
+fn hand_score(hand: List(String)) -> Int {
   let groups =
     list.group(hand, function.identity)
     |> dict.values()

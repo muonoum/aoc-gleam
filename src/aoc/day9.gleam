@@ -7,6 +7,7 @@ import gleam/string
 pub fn part1(input: String) -> Int {
   int.sum({
     use history <- list.map(parse(input))
+
     iterator.iterate(history, diff)
     |> iterator.take_while(list.any(_, not_zero))
     |> iterator.map(list.reverse)
@@ -19,6 +20,7 @@ pub fn part1(input: String) -> Int {
 pub fn part2(input: String) -> Int {
   int.sum({
     use history <- list.map(parse(input))
+
     iterator.iterate(history, diff)
     |> iterator.take_while(list.any(_, not_zero))
     |> iterator.to_list

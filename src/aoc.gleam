@@ -8,14 +8,12 @@ import aoc/day7
 import aoc/day8
 import aoc/day9
 import aoc/day14
-import gleam/bool
 import gleam/dict
 import gleam/erlang
 import gleam/int
 import gleam/io
 import gleam/list
 import gleam/otp/task
-import gleam/string
 import simplifile
 
 pub type Day {
@@ -39,7 +37,6 @@ pub fn days() {
 
 pub fn main() {
   let days = days()
-  let _answers = answers()
 
   case erlang.start_arguments() {
     [day] -> {
@@ -63,20 +60,6 @@ pub fn main() {
 
     _ -> panic
   }
-}
-
-pub fn answers() {
-  dict.from_list({
-    let assert Ok(data) = simplifile.read("data/answers.txt")
-    use line <- list.filter_map(string.split(data, "\n"))
-    use <- bool.guard(line == "", Error(Nil))
-
-    let assert [day, part1, part2] =
-      string.split(line, ",")
-      |> list.filter_map(int.parse)
-
-    Ok(#(day, #(part1, part2)))
-  })
 }
 
 pub fn day_order(a, b) {
