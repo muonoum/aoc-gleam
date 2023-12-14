@@ -14,11 +14,11 @@ import gleam/int
 import gleam/io
 import gleam/list
 import gleam/otp/task
+import gleam/string
 import simplifile
 
-pub type Day {
-  Day(Int, Int, Int)
-}
+@external(erlang, "timer", "tc")
+fn time(fun: fn() -> a) -> #(Int, a)
 
 pub fn days() {
   dict.from_list([
@@ -42,32 +42,47 @@ pub fn main() {
     [day] -> {
       let assert Ok(day) = int.parse(day)
       let assert Ok(#(part1, part2, input)) = dict.get(days, day)
-      let assert Ok(input) = simplifile.read(input)
-      [io.debug(Day(day, part1(input), part2(input)))]
+      [io.println(run_day(day, part1, part2, input))]
     }
 
     [] -> {
       dict.values({
         use day, #(part1, part2, input) <- dict.map_values(days)
-        let assert Ok(input) = simplifile.read(input)
         use <- task.async
-        Day(day, part1(input), part2(input))
+        run_day(day, part1, part2, input)
       })
       |> list.map(task.await_forever)
-      |> list.sort(day_order)
-      |> list.map(io.debug)
+      |> list.map(io.println)
     }
 
     _ -> panic
   }
 }
 
-pub fn day_order(a, b) {
-  case a, b {
-    Day(a, _, _), Day(b, _, _) -> int.compare(a, b)
-  }
-}
-
 pub fn noop(_) {
   -1
+}
+
+pub fn format_day(day) {
+  string.pad_left(int.to_string(day), 2, "0")
+}
+
+pub fn format_time(time) {
+  "(" <> int.to_string(time / 1000) <> "ms)"
+}
+
+pub fn run_day(day, part1, part2, input) {
+  let assert Ok(input) = simplifile.read(input)
+  let #(time1, value1) = time(fn() { part1(input) })
+  let #(time2, value2) = time(fn() { part2(input) })
+
+  let parts = [
+    format_day(day),
+    int.to_string(value1),
+    format_time(time1),
+    int.to_string(value2),
+    format_time(time2),
+  ]
+
+  string.join(parts, " ")
 }
