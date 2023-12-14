@@ -1,12 +1,12 @@
-import aoc/day1
-import aoc/day2
-import aoc/day3
-import aoc/day4
-import aoc/day5
-import aoc/day6
-import aoc/day7
-import aoc/day8
-import aoc/day9
+import aoc/day01
+import aoc/day02
+import aoc/day03
+import aoc/day04
+import aoc/day05
+import aoc/day06
+import aoc/day07
+import aoc/day08
+import aoc/day09
 import aoc/day14
 import gleam/dict
 import gleam/erlang
@@ -22,16 +22,16 @@ fn time(fun: fn() -> a) -> #(Int, a)
 
 pub fn days() {
   dict.from_list([
-    #(1, #(day1.part1, day1.part2, "data/day1.txt")),
-    #(2, #(day2.part1, day2.part2, "data/day2.txt")),
-    #(3, #(day3.part1, day3.part2, "data/day3.txt")),
-    #(4, #(day4.part1, day4.part2, "data/day4.txt")),
-    #(5, #(day5.part1, day5.part2, "data/day5.txt")),
-    #(6, #(day6.part1, day6.part2, "data/day6.txt")),
-    #(7, #(day7.part1, day7.part2, "data/day7.txt")),
-    #(8, #(day8.part1, day8.part2, "data/day8.txt")),
-    #(9, #(day9.part1, day9.part2, "data/day9.txt")),
-    #(14, #(day14.part1, day14.part2, "data/day14.txt")),
+    #(01, #(day01.part1, day01.part2, "inputs/day01.txt")),
+    #(02, #(day02.part1, day02.part2, "inputs/day02.txt")),
+    #(03, #(day03.part1, day03.part2, "inputs/day03.txt")),
+    #(04, #(day04.part1, day04.part2, "inputs/day04.txt")),
+    #(05, #(day05.part1, day05.part2, "inputs/day05.txt")),
+    #(06, #(day06.part1, day06.part2, "inputs/day06.txt")),
+    #(07, #(day07.part1, day07.part2, "inputs/day07.txt")),
+    #(08, #(day08.part1, day08.part2, "inputs/day08.txt")),
+    #(09, #(day09.part1, day09.part2, "inputs/day09.txt")),
+    #(14, #(day14.part1, day14.part2, "inputs/day14.txt")),
   ])
 }
 
@@ -73,6 +73,7 @@ pub fn format_time(time) {
 
 pub fn run_day(day, part1, part2, input) {
   let assert Ok(input) = simplifile.read(input)
+
   let #(time1, value1) = time(fn() { part1(input) })
   let #(time2, value2) = time(fn() { part2(input) })
 
