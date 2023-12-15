@@ -73,7 +73,8 @@ pub fn run_day(day, part1, part2, input) {
 }
 
 pub fn run_part(part, input) {
-  let #(elapsed, result) = time(fn() { part(input) })
-  [int.to_string(result), "(" <> int.to_string(elapsed / 1000) <> "ms" <> ")"]
+  let #(time, result) = time(fn() { part(input) })
+  let time = int.to_string(time / 1000) <> "ms"
+  [int.to_string(result), "(" <> time <> ")"]
   |> string.join(" ")
 }
