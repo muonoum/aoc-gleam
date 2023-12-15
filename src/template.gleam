@@ -1,26 +1,18 @@
-import gleam/bool
+import gleam/bool as _
 import gleam/int as _
-import gleam/io
+import gleam/io as _
 import gleam/iterator as _
-import gleam/list
-import gleam/string
+import gleam/list as _
+import gleam/string as _
 
-pub fn part1(input: String) -> Int {
-  parse(input)
-  |> io.debug
+pub fn part1(_input: String) -> Int {
   -1
 }
 
-pub fn part2(input: String) -> Int {
-  parse(input)
-  |> io.debug
+pub fn part2(_input: String) -> Int {
   -1
 }
 
-pub fn parse(input) {
-  let lines = string.split(input, "\n")
-  use line <- list.filter_map(lines)
-  use <- bool.guard(line == "", Error(Nil))
-
-  Ok(line)
+pub fn parse(_input: String) {
+  todo
 }

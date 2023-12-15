@@ -20,9 +20,10 @@ pub fn part1(input: String) -> Int {
 
 pub fn part2(input: String) -> Int {
   let boxes = {
-    use boxes, operation <- list.fold(parse(input), dict.new())
+    let ops = parse_ops(input)
+    use boxes, op <- list.fold(ops, dict.new())
 
-    case operation {
+    case op {
       Add(label, hash, length) -> {
         use box <- dict.update(boxes, hash)
 
@@ -58,24 +59,26 @@ pub fn part2(input: String) -> Int {
 
 fn hash(string: String) -> Int {
   use current, grapheme <- list.fold(string.to_graphemes(string), 0)
+
   let assert [codepoint] = string.to_utf_codepoints(grapheme)
   let code = string.utf_codepoint_to_int(codepoint)
   let assert Ok(current) = int.remainder({ current + code } * 17, 256)
   current
 }
 
-fn parse(input: String) {
-  use operation <- list.filter_map(
-    string.trim(input)
-    |> string.split(","),
-  )
-
-  use <- result.lazy_or(parse_add(operation))
-  parse_remove(operation)
+fn parse(input: String) -> List(String) {
+  string.trim(input)
+  |> string.split(",")
 }
 
-fn parse_add(operation: String) -> Result(Operation, Nil) {
-  case string.split(operation, "=") {
+fn parse_ops(input: String) -> List(Operation) {
+  use op <- list.filter_map(parse(input))
+  use <- result.lazy_or(parse_add(op))
+  parse_remove(op)
+}
+
+fn parse_add(op: String) -> Result(Operation, Nil) {
+  case string.split(op, "=") {
     [label, length] -> {
       let assert Ok(length) = int.parse(length)
       Ok(Add(label, hash(label), length))
@@ -84,8 +87,8 @@ fn parse_add(operation: String) -> Result(Operation, Nil) {
   }
 }
 
-fn parse_remove(operation: String) -> Result(Operation, Nil) {
-  case string.split(operation, "-") {
+fn parse_remove(op: String) -> Result(Operation, Nil) {
+  case string.split(op, "-") {
     [label, _] -> Ok(Remove(label, hash(label)))
     _ -> Error(Nil)
   }
