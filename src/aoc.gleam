@@ -63,27 +63,15 @@ pub fn noop(_) {
   -1
 }
 
-pub fn format_day(day) {
-  string.pad_left(int.to_string(day), 2, "0")
-}
-
-pub fn format_time(time) {
-  "(" <> int.to_string(time / 1000) <> "ms)"
-}
-
 pub fn run_day(day, part1, part2, input) {
   let assert Ok(input) = simplifile.read(input)
+  let day = string.pad_left(int.to_string(day), 2, "0")
+  [day, run_part(part1, input), run_part(part2, input)]
+  |> string.join(" ")
+}
 
-  let #(time1, value1) = time(fn() { part1(input) })
-  let #(time2, value2) = time(fn() { part2(input) })
-
-  let parts = [
-    format_day(day),
-    int.to_string(value1),
-    format_time(time1),
-    int.to_string(value2),
-    format_time(time2),
-  ]
-
-  string.join(parts, " ")
+pub fn run_part(part, input) {
+  let #(elapsed, result) = time(fn() { part(input) })
+  [int.to_string(result), "(" <> int.to_string(elapsed / 1000) <> "ms" <> ")"]
+  |> string.join(" ")
 }
