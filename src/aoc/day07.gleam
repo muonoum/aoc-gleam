@@ -9,8 +9,8 @@ import lib
 pub fn part1(input: String) -> Int {
   play({
     use #(hand, bid) <- list.map(parse(input))
-    let numer = card_number(_, jokers: False)
-    #(hand_number(hand, numer), bid, hand_score1(hand))
+    let number = card_number(_, jokers: False)
+    #(hand_number(hand, number), bid, hand_score1(hand))
   })
 }
 

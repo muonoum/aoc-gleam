@@ -33,8 +33,8 @@ pub fn part2(input: String) -> Int {
 
 fn run(plan: Plan) -> Int {
   let Trench(points, perimeter) = dig(plan)
-  let assert Ok(perimeter) = int.divide(perimeter, 2)
   let assert Ok(area) = area(points)
+  let assert Ok(perimeter) = int.divide(perimeter, 2)
   area + perimeter + 1
 }
 
@@ -50,11 +50,11 @@ fn dig(plan: Plan) -> Trench {
   use state, step <- list.fold(plan, Trench([Vector(0, 0)], 0))
   let #(direction, distance) = step
   let points =
-    list.prepend(state.points, case state.points, direction {
-      [Vector(x, y), ..], Right -> Vector(x + distance, y)
-      [Vector(x, y), ..], Down -> Vector(x, y + distance)
-      [Vector(x, y), ..], Up -> Vector(x, y - distance)
-      [Vector(x, y), ..], Left -> Vector(x - distance, y)
+    list.prepend(state.points, case direction, state.points {
+      Right, [Vector(x, y), ..] -> Vector(x + distance, y)
+      Down, [Vector(x, y), ..] -> Vector(x, y + distance)
+      Up, [Vector(x, y), ..] -> Vector(x, y - distance)
+      Left, [Vector(x, y), ..] -> Vector(x - distance, y)
       _, _ -> panic
     })
 
@@ -67,16 +67,11 @@ fn reverse_points(to_trench: fn() -> Trench) -> Trench {
 }
 
 pub fn parse(input: String) {
-  use line <- list.map({
-    use line <- list.filter(string.split(input, "\n"))
-    line != ""
-  })
-
+  use line <- list.map(lib.lines(input))
   let assert [direction, distance, color] = string.split(line, " ")
   let direction1 = parse_direction(direction)
   let assert Ok(distance1) = int.parse(distance)
   let #(direction2, distance2) = parse_color(color)
-
   #(direction1, distance1, direction2, distance2)
 }
 

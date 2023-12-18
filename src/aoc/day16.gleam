@@ -55,7 +55,7 @@ pub fn part2(input: String) -> Int {
   int.max(max, energize(space, start))
 }
 
-fn energize(space: Space, start: Light) {
+fn energize(space: Space, start: Light) -> Int {
   let states = {
     let initial_state = State(lights: set.from_list([start]), energy: set.new())
     use state <- iterator.iterate(from: initial_state)
@@ -71,7 +71,7 @@ fn energize(space: Space, start: Light) {
   list.Stop(count_energy(energy))
 }
 
-fn count_energy(energy: Set(Light)) {
+fn count_energy(energy: Set(Light)) -> Int {
   set.to_list(energy)
   |> list.map(fn(light) { light.position })
   |> set.from_list
