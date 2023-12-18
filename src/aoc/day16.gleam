@@ -5,6 +5,7 @@ import gleam/iterator
 import gleam/list
 import gleam/set.{type Set}
 import gleam/string
+import lib.{type Vector, Vector}
 
 pub type Space {
   Space(cells: Dict(Vector, Cell), limit: Vector)
@@ -20,10 +21,6 @@ pub type Cell {
 
 pub type Light {
   Light(position: Vector, momentum: Vector)
-}
-
-pub type Vector {
-  Vector(x: Int, y: Int)
 }
 
 pub type State {

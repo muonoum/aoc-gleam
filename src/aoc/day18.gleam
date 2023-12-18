@@ -1,6 +1,7 @@
 import gleam/int
 import gleam/list
 import gleam/string
+import lib.{type Vector, Vector}
 
 pub type Direction {
   Right
@@ -9,8 +10,8 @@ pub type Direction {
   Up
 }
 
-pub type Polygon {
-  Polygon(points: List(#(Int, Int)), perimeter: Int)
+pub type Trench {
+  Trench(points: List(Vector), perimeter: Int)
 }
 
 pub type Plan =
@@ -31,39 +32,38 @@ pub fn part2(input: String) -> Int {
 }
 
 fn run(plan: Plan) -> Int {
-  let Polygon(points, perimeter) = trace(plan)
+  let Trench(points, perimeter) = dig(plan)
   let assert Ok(perimeter) = int.divide(perimeter, 2)
-  let assert Ok(area) =
-    list.window_by_2(points)
-    |> list.map(fn(pair) {
-      let #(current, next) = pair
-      current.0 * next.1 - current.1 * next.0
-    })
-    |> int.sum
-    |> int.divide(2)
-
-  1 + area + perimeter
+  let assert Ok(area) = area(points)
+  area + perimeter + 1
 }
 
-fn trace(plan: Plan) -> Polygon {
+fn area(points: List(Vector)) -> Result(Int, Nil) {
+  use <- lib.return(int.divide(_, 2))
+  use <- lib.return(int.sum)
+  use #(current, next) <- list.map(list.window_by_2(points))
+  current.x * next.y - current.y * next.x
+}
+
+fn dig(plan: Plan) -> Trench {
   use <- reverse_points
-  use state, step <- list.fold(plan, Polygon([#(0, 0)], 0))
+  use state, step <- list.fold(plan, Trench([Vector(0, 0)], 0))
   let #(direction, distance) = step
   let points =
     list.prepend(state.points, case state.points, direction {
-      [#(x, y), ..], Right -> #(x + distance, y)
-      [#(x, y), ..], Down -> #(x, y + distance)
-      [#(x, y), ..], Up -> #(x, y - distance)
-      [#(x, y), ..], Left -> #(x - distance, y)
+      [Vector(x, y), ..], Right -> Vector(x + distance, y)
+      [Vector(x, y), ..], Down -> Vector(x, y + distance)
+      [Vector(x, y), ..], Up -> Vector(x, y - distance)
+      [Vector(x, y), ..], Left -> Vector(x - distance, y)
       _, _ -> panic
     })
 
-  Polygon(points, state.perimeter + distance)
+  Trench(points, state.perimeter + distance)
 }
 
-fn reverse_points(poly: fn() -> Polygon) -> Polygon {
-  let polygon = poly()
-  Polygon(list.reverse(polygon.points), polygon.perimeter)
+fn reverse_points(to_trench: fn() -> Trench) -> Trench {
+  let trench = to_trench()
+  Trench(..trench, points: list.reverse(trench.points))
 }
 
 pub fn parse(input: String) {
@@ -72,28 +72,18 @@ pub fn parse(input: String) {
     line != ""
   })
 
-  let assert [direction, distance, code] = string.split(line, " ")
+  let assert [direction, distance, color] = string.split(line, " ")
   let direction1 = parse_direction(direction)
   let assert Ok(distance1) = int.parse(distance)
-  let #(direction2, distance2) = parse_code(code)
+  let #(direction2, distance2) = parse_color(color)
 
   #(direction1, distance1, direction2, distance2)
 }
 
-fn parse_direction(direction: String) -> Direction {
-  case direction {
-    "R" | "0" -> Right
-    "D" | "1" -> Down
-    "L" | "2" -> Left
-    "U" | "3" -> Up
-    _ -> panic
-  }
-}
-
-fn parse_code(code: String) -> #(Direction, Int) {
+fn parse_color(color: String) -> #(Direction, Int) {
   let assert [last, ..rest] =
     list.reverse({
-      string.to_graphemes(code)
+      string.to_graphemes(color)
       |> list.filter_map(int.base_parse(_, 16))
     })
 
@@ -106,4 +96,14 @@ fn parse_code(code: String) -> #(Direction, Int) {
     |> parse_direction
 
   #(direction, distance)
+}
+
+fn parse_direction(direction: String) -> Direction {
+  case direction {
+    "R" | "0" -> Right
+    "D" | "1" -> Down
+    "L" | "2" -> Left
+    "U" | "3" -> Up
+    _ -> panic
+  }
 }

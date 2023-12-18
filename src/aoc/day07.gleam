@@ -1,9 +1,9 @@
-import gleam/bool
 import gleam/dict
 import gleam/function
 import gleam/int
 import gleam/list
 import gleam/string
+import lib
 
 pub fn part1(input: String) -> Int {
   let hands = {
@@ -46,15 +46,11 @@ pub fn part2(_input: String) -> Int {
 }
 
 fn parse(input: String) -> List(#(List(String), Int)) {
-  let lines = string.split(input, "\n")
-  use line <- list.filter_map(lines)
-  use <- bool.guard(line == "", Error(Nil))
-
+  use line <- list.map(lib.lines(input))
   let assert [hand, bid] = string.split(line, " ")
   let hand = string.split(hand, "")
   let assert Ok(bid) = int.parse(bid)
-
-  Ok(#(hand, bid))
+  #(hand, bid)
 }
 
 fn hand_score(hand: List(String)) -> Int {
@@ -81,7 +77,6 @@ fn hand_score(hand: List(String)) -> Int {
     [_, _, _, _] -> 2
     // High card
     [_, _, _, _, _] -> 1
-
     _ -> panic as string.inspect(groups)
   }
 }
@@ -90,7 +85,6 @@ fn hand_number(hand: List(String)) -> Int {
   let assert Ok(number) =
     list.map(hand, card_number)
     |> int.undigits(14)
-
   number
 }
 
@@ -109,7 +103,6 @@ fn card_number(card: String) -> Int {
     "4" -> 3
     "3" -> 2
     "2" -> 1
-
     _ -> panic
   }
 }

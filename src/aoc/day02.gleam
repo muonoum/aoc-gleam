@@ -1,32 +1,12 @@
-import gleam/bool
 import gleam/int
 import gleam/list
 import gleam/result
 import gleam/string
-
-fn games(from input: String) -> List(#(Int, List(List(#(String, Int))))) {
-  use line <- list.filter_map(string.split(input, on: "\n"))
-  use <- bool.guard(when: line == "", return: Error(Nil))
-
-  let assert [id, game] = string.split(line, on: ":")
-  let assert [_, id] = string.split(id, on: " ")
-  let assert Ok(id) = int.parse(id)
-
-  let sets = {
-    use sets <- list.map(string.split(game, on: ";"))
-    use set <- list.map(string.split(sets, on: ","))
-
-    let assert [count, color] = string.split(string.trim(set), on: " ")
-    let assert Ok(count) = int.parse(count)
-    #(color, count)
-  }
-
-  Ok(#(id, sets))
-}
+import lib
 
 pub fn part1(input: String) {
   int.sum({
-    use #(id, all) <- list.filter_map(games(from: input))
+    use #(id, all) <- list.filter_map(parse(input))
 
     let possible = {
       use set <- list.try_map(all)
@@ -46,7 +26,7 @@ pub fn part1(input: String) {
 
 pub fn part2(input: String) {
   int.sum({
-    use #(_id, sets) <- list.map(games(from: input))
+    use #(_id, sets) <- list.map(parse(input))
 
     let #(r, g, b) = {
       use result, set <- list.fold(over: sets, from: #(0, 0, 0))
@@ -62,4 +42,23 @@ pub fn part2(input: String) {
 
     r * g * b
   })
+}
+
+fn parse(input: String) -> List(#(Int, List(List(#(String, Int))))) {
+  use line <- list.map(lib.lines(input))
+
+  let assert [id, game] = string.split(line, on: ":")
+  let assert [_, id] = string.split(id, on: " ")
+  let assert Ok(id) = int.parse(id)
+
+  let sets = {
+    use sets <- list.map(string.split(game, on: ";"))
+    use set <- list.map(string.split(sets, on: ","))
+
+    let assert [count, color] = string.split(string.trim(set), on: " ")
+    let assert Ok(count) = int.parse(count)
+    #(color, count)
+  }
+
+  #(id, sets)
 }

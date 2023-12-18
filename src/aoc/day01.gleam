@@ -3,6 +3,32 @@ import gleam/list
 import gleam/result
 import gleam/string
 
+pub fn part1(input: String) -> Int {
+  int.sum({
+    use line <- list.filter_map(string.split(input, "\n"))
+
+    join(
+      string.to_graphemes(line)
+      |> list.filter_map(int.parse),
+    )
+  })
+}
+
+fn join(input: List(Int)) -> Result(Int, Nil) {
+  use first <- result.try(list.first(input))
+  use last <- result.try(list.last(input))
+
+  int.undigits([first, last], 10)
+  |> result.nil_error
+}
+
+pub fn part2(input: String) {
+  int.sum({
+    use line <- list.filter_map(string.split(input, "\n"))
+    join(parse(line, []))
+  })
+}
+
 fn parse(input: String, result: List(Int)) -> List(Int) {
   case input {
     "" -> list.reverse(result)
@@ -19,31 +45,4 @@ fn parse(input: String, result: List(Int)) -> List(Int) {
       string.drop_left(input, 1)
       |> parse(result)
   }
-}
-
-fn join(input: List(Int)) -> Result(Int, Nil) {
-  use first <- result.try(list.first(input))
-  use last <- result.try(list.last(input))
-
-  int.undigits([first, last], 10)
-  |> result.nil_error
-}
-
-pub fn part1(input: String) -> Int {
-  int.sum({
-    use line <- list.filter_map(string.split(input, "\n"))
-
-    string.to_graphemes(line)
-    |> list.filter_map(int.parse)
-    |> join()
-  })
-}
-
-pub fn part2(input: String) {
-  int.sum({
-    use line <- list.filter_map(string.split(input, "\n"))
-
-    parse(line, [])
-    |> join()
-  })
 }
