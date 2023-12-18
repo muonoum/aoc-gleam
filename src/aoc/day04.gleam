@@ -52,10 +52,10 @@ fn collect_next(
 }
 
 fn parse(input: String) -> List(Card) {
-  use line <- list.map(
-    string.split(input, "\n")
-    |> list.filter(non_empty),
-  )
+  use line <- list.map({
+    use line <- list.filter(string.split(input, "\n"))
+    line != ""
+  })
 
   let assert ["Card" <> id, rest] = string.split(line, ":")
   let assert Ok(id) = int.parse(string.trim(id))
@@ -72,8 +72,4 @@ fn parse(input: String) -> List(Card) {
     |> set.size
 
   Card(id, matches)
-}
-
-fn non_empty(line: String) -> Bool {
-  line != ""
 }

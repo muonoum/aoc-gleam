@@ -39,7 +39,7 @@ fn parse(input: String) -> List(List(Int)) {
   |> Ok
 }
 
-fn not_zero(v) {
+fn not_zero(v: Int) -> Bool {
   v != 0
 }
 
@@ -48,7 +48,7 @@ fn diff(history: List(Int)) -> List(Int) {
   b - a
 }
 
-fn extrapolate(left, row) {
+fn extrapolate(v: Int, row: List(Int)) -> Int {
   let assert [first, ..] = row
-  first - left
+  first - v
 }
