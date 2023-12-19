@@ -5,6 +5,10 @@ pub type Vector {
   Vector(x: Int, y: Int)
 }
 
+pub fn add_vector(a: Vector, b: Vector) -> Vector {
+  Vector(a.x + b.x, a.y + b.y)
+}
+
 pub fn return(a: fn(a) -> b, body: fn() -> a) -> b {
   a(body())
 }
