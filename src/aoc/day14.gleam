@@ -21,7 +21,7 @@ pub fn part1(input: String) -> Int {
         order.Gt
       })
       |> list.reverse
-      |> list.index_map(fn(index, spot) {
+      |> list.index_map(fn(spot, index) {
         use <- bool.guard(spot != "O", 0)
         index + 1
       })

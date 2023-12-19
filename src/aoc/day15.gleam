@@ -50,7 +50,7 @@ pub fn part2(input: String) -> Int {
 
   dict.values({
     use hash, box <- dict.map_values(boxes)
-    use index, #(_label, length) <- list.index_map(box)
+    use #(_label, length), index <- list.index_map(box)
     { 1 + hash } * { 1 + index } * length
   })
   |> list.flatten

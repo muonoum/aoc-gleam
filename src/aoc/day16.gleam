@@ -138,8 +138,8 @@ fn parse(input: String) {
   Space(cells, limit)
 }
 
-fn parse_line(row: Int, line: String) -> List(#(Vector, Cell)) {
-  use column, grapheme <- list.index_map(string.split(line, ""))
+fn parse_line(line: String, row: Int) -> List(#(Vector, Cell)) {
+  use grapheme, column <- list.index_map(string.split(line, ""))
   let cell = parse_cell(grapheme)
   let position = Vector(column, row)
   #(position, cell)
