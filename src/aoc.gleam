@@ -11,6 +11,7 @@ import aoc/day14
 import aoc/day15
 import aoc/day16
 import aoc/day18
+import aoc/day19
 import gleam/dict
 import gleam/erlang
 import gleam/int
@@ -38,6 +39,7 @@ pub fn days() {
     #(15, #(day15.part1, day15.part2, "inputs/day15.txt")),
     #(16, #(day16.part1, day16.part2, "inputs/day16.txt")),
     #(18, #(day18.part1, day18.part2, "inputs/day18.txt")),
+    #(19, #(day19.part1, day19.part2, "inputs/day19.txt")),
   ])
 }
 
