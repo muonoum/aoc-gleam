@@ -1,53 +1,74 @@
 import gleam/bool
 import gleam/int
 import gleam/list
+import gleam/pair
 import gleam/string
-import lib
+import lib.{type Vector}
+
+pub type State {
+  State(universe: List(Vector), columns: List(Int), rows: List(Int))
+}
 
 pub fn part1(input: String) -> Int {
-  let universe = {
-    use point <- list.filter_map(
-      parse(input)
-      |> list.map(string.split(_, ""))
-      |> list.reverse()
-      |> list.fold([], expand)
-      |> list.transpose()
-      |> list.reverse()
-      |> list.fold([], expand)
-      |> list.transpose()
-      |> lib.grid,
-    )
+  let state = parse(input)
+  solve(state, 1)
+}
 
-    case point {
-      #(position, "#") -> Ok(position)
-      _else -> Error(Nil)
-    }
-  }
+pub fn part2(input: String) -> Int {
+  let state = parse(input)
+  solve(state, 1_000_000 - 1)
+}
+
+fn solve(state: State, factor: Int) {
+  let State(universe, columns, rows) = state
 
   int.sum({
     use #(a, b) <- list.map(list.combination_pairs(universe))
-    let dx = int.absolute_value({ a.x - b.x })
-    let dy = int.absolute_value({ a.y - b.y })
+    let #(ax, bx) = list.fold(columns, #(a.x, b.x), expand(by: factor))
+    let #(ay, by) = list.fold(rows, #(a.y, b.y), expand(by: factor))
+    let dx = int.absolute_value({ ax - bx })
+    let dy = int.absolute_value({ ay - by })
     dx + dy
   })
 }
 
-pub fn part2(input: String) -> Int {
-  parse(input)
-  -1
-}
-
-fn expand(universe, row) {
-  case list.all(row, fn(v) { v == "." }) {
-    True -> [row, row, ..universe]
-    False -> [row, ..universe]
+fn expand(by factor: Int) {
+  fn(pair: #(Int, Int), v: Int) {
+    case pair {
+      #(a, b) if a < v && b > v -> #(a - factor, b)
+      #(a, b) if a > v && b < v -> #(a, b - factor)
+      #(a, b) -> #(a, b)
+    }
   }
 }
 
-pub fn parse(input) {
-  let lines = string.split(input, "\n")
-  use line <- list.filter_map(lines)
-  use <- bool.guard(line == "", Error(Nil))
+fn parse(input: String) -> State {
+  let lines = lib.lines(input)
 
-  Ok(line)
+  let rows = {
+    use #(line, index) <- list.filter_map(list.index_map(lines, pair.new))
+    use <- bool.guard(string.contains(line, "#"), Error(Nil))
+    Ok(index)
+  }
+
+  let graphemes = list.map(lines, string.to_graphemes)
+
+  let columns = {
+    use #(line, index) <- list.filter_map(
+      list.transpose(graphemes)
+      |> list.map(string.join(_, ""))
+      |> list.index_map(pair.new),
+    )
+
+    use <- bool.guard(string.contains(line, "#"), Error(Nil))
+    Ok(index)
+  }
+
+  let grid = {
+    use #(position, node) <- list.filter_map(lib.grid(graphemes))
+    use <- bool.guard(node != "#", Error(Nil))
+    Ok(position)
+  }
+
+  State(grid, columns, rows)
 }
