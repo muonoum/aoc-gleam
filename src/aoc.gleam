@@ -7,6 +7,7 @@ import aoc/day06
 import aoc/day07
 import aoc/day08
 import aoc/day09
+import aoc/day13
 import aoc/day14
 import aoc/day15
 import aoc/day16
@@ -35,6 +36,7 @@ pub fn days() {
     #(07, #(day07.part1, day07.part2, "inputs/day07.txt")),
     #(08, #(day08.part1, day08.part2, "inputs/day08.txt")),
     #(09, #(day09.part1, day09.part2, "inputs/day09.txt")),
+    #(13, #(day13.part1, day13.part2, "inputs/day13.txt")),
     #(14, #(day14.part1, day14.part2, "inputs/day14.txt")),
     #(15, #(day15.part1, day15.part2, "inputs/day15.txt")),
     #(16, #(day16.part1, day16.part2, "inputs/day16.txt")),
