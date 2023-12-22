@@ -26,8 +26,8 @@ fn solve(state: State, factor: Int) {
     use #(a, b) <- list.map(list.combination_pairs(universe))
     let #(ax, bx) = list.fold(columns, #(a.x, b.x), expand(by: factor))
     let #(ay, by) = list.fold(rows, #(a.y, b.y), expand(by: factor))
-    let dx = int.absolute_value({ ax - bx })
-    let dy = int.absolute_value({ ay - by })
+    let dx = int.absolute_value(ax - bx)
+    let dy = int.absolute_value(ay - by)
     dx + dy
   })
 }

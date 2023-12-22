@@ -1,43 +1,48 @@
 import gleam/bool
 import gleam/int
 import gleam/list
-import gleam/pair
 import gleam/result
 import gleam/string
+import lib
 
 pub fn part1(input: String) -> Int {
-  let results =
-    result.partition({
-      use pattern <- list.flat_map(parse(input))
-      [reflect(pattern, 100), reflect(list.transpose(pattern), 1)]
-    })
+  let patterns = parse(input)
 
-  int.sum(pair.first(results))
+  let rows = {
+    use rows <- list.filter_map(patterns)
+    mirror(rows, 100)
+  }
+
+  let columns = {
+    use rows <- list.filter_map(patterns)
+    mirror(list.transpose(rows), 1)
+  }
+
+  list.flatten([rows, columns])
+  |> int.sum
 }
 
 pub fn part2(_input: String) -> Int {
   -1
 }
 
-fn reflect(pattern: List(List(String)), multiplier: Int) {
+fn mirror(pattern: List(List(String)), multiplier: Int) -> Result(Int, Nil) {
+  use <- lib.return(result.nil_error)
   use index, #(a, b) <- list.fold_until(list.window_by_2(pattern), Error(1))
   let assert Error(index) = index
   use <- bool.guard(a != b, list.Continue(Error(index + 1)))
+
   let #(before, after) = list.split(pattern, index)
+  let bad =
+    list.reverse(before)
+    |> list.zip(after)
+    |> list.any(fn(pair) {
+      let #(before, after) = pair
+      before != after
+    })
 
-  let bad = {
-    use #(before, after) <- list.any(
-      list.reverse(before)
-      |> list.zip(after),
-    )
-
-    before != after
-  }
-
-  case bad {
-    True -> list.Continue(Error(index + 1))
-    False -> list.Stop(Ok(index * multiplier))
-  }
+  use <- bool.guard(bad, list.Continue(Error(index + 1)))
+  list.Stop(Ok(index * multiplier))
 }
 
 pub fn parse(input: String) -> List(List(List(String))) {

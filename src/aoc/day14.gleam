@@ -1,31 +1,28 @@
 import gleam/bool
+import gleam/dict
 import gleam/int
 import gleam/list
-import gleam/order
+import gleam/pair
 import gleam/string
+import lib.{type Vector, Vector}
+
+pub type Dish {
+  Dish(rocks: Rocks, limit: Vector)
+}
+
+pub type Rocks =
+  List(#(Vector, Rock))
+
+pub type Rock {
+  Rounded
+  Cubed
+}
 
 pub fn part1(input: String) -> Int {
   int.sum({
-    use column <- list.map(
-      parse(input)
-      |> list.transpose,
-    )
-
-    int.sum({
-      string.join(column, "")
-      |> string.split("#")
-      |> list.intersperse("#")
-      |> list.flat_map(fn(column) {
-        use spot, _ <- list.sort(string.split(column, ""))
-        use <- bool.guard(spot == "O", order.Lt)
-        order.Gt
-      })
-      |> list.reverse
-      |> list.index_map(fn(spot, index) {
-        use <- bool.guard(spot != "O", 0)
-        index + 1
-      })
-    })
+    parse(input)
+    |> tilt_north
+    |> calculate_load
   })
 }
 
@@ -33,8 +30,60 @@ pub fn part2(_input: String) -> Int {
   -1
 }
 
-pub fn parse(input: String) -> List(List(String)) {
-  use line <- list.filter_map(string.split(input, "\n"))
-  use <- bool.guard(line == "", Error(Nil))
-  Ok(string.split(line, ""))
+fn calculate_load(dish: Dish) {
+  let Dish(rocks, limit) = dish
+  use #(position, rock) <- list.map(rocks)
+  use <- bool.guard(rock == Cubed, 0)
+  limit.y + 1 - position.y
+}
+
+fn tilt_north(dish: Dish) {
+  let Dish(rocks, _) = dish
+
+  let rocks = {
+    use column <- list.flat_map(columns(rocks))
+    pair.second({
+      use y, #(position, rock) <- list.map_fold(column, 0)
+      case rock {
+        Cubed -> #(position.y + 1, #(position, rock))
+        Rounded -> #(y + 1, #(Vector(position.x, y), rock))
+      }
+    })
+  }
+
+  Dish(..dish, rocks: rocks)
+}
+
+fn columns(rocks: Rocks) {
+  let columns =
+    dict.values({
+      use #(position, _) <- list.group(rocks)
+      position.x
+    })
+
+  use column <- list.map(columns)
+  use #(a, _), #(b, _) <- list.sort(column)
+  int.compare(a.y, b.y)
+}
+
+pub fn parse(input: String) -> Dish {
+  let assert [first_line, ..] as lines = lib.lines(input)
+  let limit = Vector(string.length(first_line) - 1, list.length(lines) - 1)
+
+  let rocks = {
+    let grid = lib.parse_grid(input)
+    use #(position, grapheme) <- list.filter_map(grid)
+    parse_grapheme(grapheme, position)
+  }
+
+  Dish(rocks, limit)
+}
+
+fn parse_grapheme(grapheme: String, position: Vector) {
+  case grapheme {
+    "O" -> Ok(#(position, Rounded))
+    "#" -> Ok(#(position, Cubed))
+    "." -> Error(Nil)
+    _else -> panic
+  }
 }
