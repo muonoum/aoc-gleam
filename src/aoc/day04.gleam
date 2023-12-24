@@ -5,6 +5,7 @@ import gleam/list
 import gleam/pair
 import gleam/set
 import gleam/string
+import lib/read
 
 pub type Card {
   Card(id: Int, matches: Int)
@@ -12,7 +13,6 @@ pub type Card {
 
 pub fn part1(input: String) -> Int {
   let cards = parse(input)
-
   int.sum({
     use Card(_id, matches) <- list.map(cards)
     use <- bool.guard(matches == 0, 0)
@@ -37,10 +37,8 @@ fn collect_next(
   deck: List(Card),
 ) -> List(Card) {
   let deck = list.fold(cards, deck, list.prepend)
-
   let wins = {
     use card <- list.flat_map(cards)
-
     list.split(all, card.id)
     |> pair.second
     |> list.split(card.matches)
@@ -52,16 +50,11 @@ fn collect_next(
 }
 
 fn parse(input: String) -> List(Card) {
-  use line <- list.map({
-    use line <- list.filter(string.split(input, "\n"))
-    line != ""
-  })
-
+  use line <- list.map(read.lines(input))
   let assert ["Card" <> id, rest] = string.split(line, ":")
   let assert Ok(id) = int.parse(string.trim(id))
   let assert [want, have] = {
     use part <- list.map(string.split(rest, "|"))
-
     string.split(part, " ")
     |> list.filter_map(int.parse)
     |> set.from_list
@@ -70,6 +63,5 @@ fn parse(input: String) -> List(Card) {
   let matches =
     set.intersection(want, have)
     |> set.size
-
   Card(id, matches)
 }

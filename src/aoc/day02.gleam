@@ -2,7 +2,7 @@ import gleam/int
 import gleam/list
 import gleam/result
 import gleam/string
-import lib
+import lib/read
 
 pub fn part1(input: String) {
   int.sum({
@@ -45,17 +45,17 @@ pub fn part2(input: String) {
 }
 
 fn parse(input: String) -> List(#(Int, List(List(#(String, Int))))) {
-  use line <- list.map(lib.lines(input))
+  use line <- list.map(read.lines(input))
 
-  let assert [id, game] = string.split(line, on: ":")
-  let assert [_, id] = string.split(id, on: " ")
+  let assert [id, game] = string.split(line, ":")
+  let assert [_, id] = string.split(id, " ")
   let assert Ok(id) = int.parse(id)
 
   let sets = {
-    use sets <- list.map(string.split(game, on: ";"))
-    use set <- list.map(string.split(sets, on: ","))
+    use sets <- list.map(string.split(game, ";"))
+    use set <- list.map(string.split(sets, ","))
 
-    let assert [count, color] = string.split(string.trim(set), on: " ")
+    let assert [count, color] = string.split(string.trim(set), " ")
     let assert Ok(count) = int.parse(count)
     #(color, count)
   }

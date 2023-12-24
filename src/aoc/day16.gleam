@@ -5,10 +5,11 @@ import gleam/iterator
 import gleam/list
 import gleam/set.{type Set}
 import gleam/string
-import lib.{type Vector, Vector}
+import lib/int/vector.{type V2, V2}
+import lib/read
 
 pub type Space {
-  Space(cells: Dict(Vector, Cell), limit: Vector)
+  Space(cells: Dict(V2, Cell), limit: V2)
 }
 
 pub type Cell {
@@ -20,7 +21,7 @@ pub type Cell {
 }
 
 pub type Light {
-  Light(position: Vector, momentum: Vector)
+  Light(position: V2, velocity: V2)
 }
 
 pub type State {
@@ -29,7 +30,7 @@ pub type State {
 
 pub fn part1(input: String) -> Int {
   let space = parse(input)
-  let start = Light(Vector(0, 0), Vector(1, 0))
+  let start = Light(V2(0, 0), V2(1, 0))
   energize(space, start)
 }
 
@@ -38,15 +39,15 @@ pub fn part2(input: String) -> Int {
 
   let horizontal = {
     use x <- list.flat_map(list.range(0, space.limit.x))
-    let top = Light(Vector(x, 0), Vector(0, 1))
-    let bottom = Light(Vector(x, space.limit.y), Vector(0, -1))
+    let top = Light(V2(x, 0), V2(0, 1))
+    let bottom = Light(V2(x, space.limit.y), V2(0, -1))
     [top, bottom]
   }
 
   let vertical = {
     use y <- list.flat_map(list.range(0, space.limit.y))
-    let left = Light(Vector(0, y), Vector(1, 0))
-    let right = Light(Vector(space.limit.x, y), Vector(-1, 0))
+    let left = Light(V2(0, y), V2(1, 0))
+    let right = Light(V2(space.limit.x, y), V2(-1, 0))
     [left, right]
   }
 
@@ -78,59 +79,55 @@ fn count_energy(energy: Set(Light)) -> Int {
   |> set.size
 }
 
-fn add_vectors(a: Vector, b: Vector, limit: Vector) -> Result(Vector, Nil) {
-  case Vector(a.x + b.x, a.y + b.y) {
-    Vector(x, _) if x < 0 || x > limit.x -> Error(Nil)
-    Vector(_, y) if y < 0 || y > limit.y -> Error(Nil)
+fn add_vectors(a: V2, b: V2, limit: V2) -> Result(V2, Nil) {
+  case V2(a.x + b.x, a.y + b.y) {
+    V2(x, _) if x < 0 || x > limit.x -> Error(Nil)
+    V2(_, y) if y < 0 || y > limit.y -> Error(Nil)
     position -> Ok(position)
   }
 }
 
-fn split_horizontal(momentum: Vector) -> List(Vector) {
-  case momentum {
-    Vector(x, y) if x == 0 -> [Vector(-y, 0), Vector(y, 0)]
-    Vector(x, y) if y == 0 -> [Vector(x, y)]
+fn split_horizontal(velocity: V2) -> List(V2) {
+  case velocity {
+    V2(x, y) if x == 0 -> [V2(-y, 0), V2(y, 0)]
+    V2(x, y) if y == 0 -> [V2(x, y)]
     _ -> panic
   }
 }
 
-fn split_vertical(momentum: Vector) -> List(Vector) {
-  case momentum {
-    Vector(x, y) if x == 0 -> [Vector(x, y)]
-    Vector(x, y) if y == 0 -> [Vector(0, -x), Vector(0, x)]
+fn split_vertical(velocity: V2) -> List(V2) {
+  case velocity {
+    V2(x, y) if x == 0 -> [V2(x, y)]
+    V2(x, y) if y == 0 -> [V2(0, -x), V2(0, x)]
     _ -> panic
   }
 }
 
 fn move(light: Light, space: Space, lights: Set(Light)) {
   let assert Ok(cell) = dict.get(space.cells, light.position)
-  let update = fn(lights, momentum) {
-    case add_vectors(light.position, momentum, space.limit) {
-      Ok(position) -> set.insert(lights, Light(position, momentum))
+  let update = fn(lights, velocity) {
+    case add_vectors(light.position, velocity, space.limit) {
+      Ok(position) -> set.insert(lights, Light(position, velocity))
       Error(Nil) -> lights
     }
   }
 
   case cell {
-    EmptySpace -> update(lights, light.momentum)
-    LeftMirror -> update(lights, Vector(light.momentum.y, light.momentum.x))
-    RightMirror -> update(lights, Vector(-light.momentum.y, -light.momentum.x))
+    EmptySpace -> update(lights, light.velocity)
+    LeftMirror -> update(lights, V2(light.velocity.y, light.velocity.x))
+    RightMirror -> update(lights, V2(-light.velocity.y, -light.velocity.x))
     HorizontalSplit ->
-      split_horizontal(light.momentum)
+      split_horizontal(light.velocity)
       |> list.fold(from: lights, with: update)
     VerticalSplit ->
-      split_vertical(light.momentum)
+      split_vertical(light.velocity)
       |> list.fold(from: lights, with: update)
   }
 }
 
 fn parse(input: String) {
-  let assert [first_line, ..] as lines = {
-    use line <- list.filter(string.split(input, "\n"))
-    line != ""
-  }
-
-  let limit = Vector(string.length(first_line) - 1, list.length(lines) - 1)
+  let assert [first_line, ..] as lines = read.lines(input)
+  let limit = V2(string.length(first_line) - 1, list.length(lines) - 1)
   let cells =
     list.index_map(lines, parse_line)
     |> list.flatten
@@ -138,10 +135,10 @@ fn parse(input: String) {
   Space(cells, limit)
 }
 
-fn parse_line(line: String, row: Int) -> List(#(Vector, Cell)) {
-  use grapheme, column <- list.index_map(string.split(line, ""))
+fn parse_line(line: String, row: Int) -> List(#(V2, Cell)) {
+  use grapheme, column <- list.index_map(read.fields(line, ""))
   let cell = parse_cell(grapheme)
-  let position = Vector(column, row)
+  let position = V2(column, row)
   #(position, cell)
 }
 

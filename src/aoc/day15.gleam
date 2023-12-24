@@ -1,10 +1,11 @@
 import gleam/dict
 import gleam/int
 import gleam/list
-import gleam/option.{None, Some}
+import gleam/option
 import gleam/pair
 import gleam/result
 import gleam/string
+import lib/read
 
 pub type Operation {
   Add(label: String, hash: Int, length: Int)
@@ -12,8 +13,7 @@ pub type Operation {
 }
 
 pub fn part1(input: String) -> Int {
-  string.trim(input)
-  |> string.split(",")
+  read.fields(input, ",")
   |> list.map(hash)
   |> int.sum
 }
@@ -26,20 +26,17 @@ pub fn part2(input: String) -> Int {
     case op {
       Add(label, hash, length) -> {
         use box <- dict.update(boxes, hash)
-
         case box {
-          None -> [#(label, length)]
-          Some(box) -> list.key_set(box, label, length)
+          option.None -> [#(label, length)]
+          option.Some(box) -> list.key_set(box, label, length)
         }
       }
 
       Remove(label, hash) -> {
         use box <- dict.update(boxes, hash)
-
         case box {
-          None -> []
-
-          Some(box) ->
+          option.None -> []
+          option.Some(box) ->
             list.key_pop(box, label)
             |> result.map(pair.second)
             |> result.unwrap(box)

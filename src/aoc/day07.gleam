@@ -4,7 +4,7 @@ import gleam/int
 import gleam/list
 import gleam/result
 import gleam/string
-import lib
+import lib/read
 
 pub fn part1(input: String) -> Int {
   play({
@@ -155,7 +155,7 @@ fn hand_score2(hand: List(String)) -> Int {
 }
 
 fn parse(input: String) -> List(#(List(String), Int)) {
-  use line <- list.map(lib.lines(input))
+  use line <- list.map(read.lines(input))
   let assert [hand, bid] = string.split(line, " ")
   let hand = string.split(hand, "")
   let assert Ok(bid) = int.parse(bid)

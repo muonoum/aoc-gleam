@@ -1,15 +1,14 @@
-import gleam/bool
 import gleam/int
 import gleam/iterator
 import gleam/list
-import gleam/string
+import lib
+import lib/read
 
 pub fn part1(input: String) -> Int {
   int.sum({
     use history <- list.map(parse(input))
-
     iterator.iterate(history, diff)
-    |> iterator.take_while(list.any(_, not_zero))
+    |> iterator.take_while(list.any(_, lib.non_zero))
     |> iterator.map(list.reverse)
     |> iterator.map(extrapolate(0, _))
     |> iterator.to_list
@@ -20,9 +19,8 @@ pub fn part1(input: String) -> Int {
 pub fn part2(input: String) -> Int {
   int.sum({
     use history <- list.map(parse(input))
-
     iterator.iterate(history, diff)
-    |> iterator.take_while(list.any(_, not_zero))
+    |> iterator.take_while(list.any(_, lib.non_zero))
     |> iterator.to_list
     |> list.reverse()
     |> list.fold(0, extrapolate)
@@ -30,17 +28,8 @@ pub fn part2(input: String) -> Int {
 }
 
 fn parse(input: String) -> List(List(Int)) {
-  let lines = string.split(input, "\n")
-  use line <- list.filter_map(lines)
-  use <- bool.guard(line == "", Error(Nil))
-
-  string.split(line, " ")
-  |> list.filter_map(int.parse)
-  |> Ok
-}
-
-fn not_zero(v: Int) -> Bool {
-  v != 0
+  use line <- list.map(read.lines(input))
+  read.integers(line, " ")
 }
 
 fn diff(history: List(Int)) -> List(Int) {

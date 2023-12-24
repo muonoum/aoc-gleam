@@ -3,10 +3,11 @@ import gleam/int
 import gleam/list
 import gleam/pair
 import gleam/string
-import lib.{type Vector}
+import lib/int/vector.{type V2}
+import lib/read
 
 pub type State {
-  State(universe: List(Vector), columns: List(Int), rows: List(Int))
+  State(universe: List(V2), columns: List(Int), rows: List(Int))
 }
 
 pub fn part1(input: String) -> Int {
@@ -43,16 +44,13 @@ fn expand(by factor: Int) {
 }
 
 fn parse(input: String) -> State {
-  let lines = lib.lines(input)
-
+  let lines = read.lines(input)
   let rows = {
     use #(line, index) <- list.filter_map(list.index_map(lines, pair.new))
     use <- bool.guard(string.contains(line, "#"), Error(Nil))
     Ok(index)
   }
-
   let graphemes = list.map(lines, string.to_graphemes)
-
   let columns = {
     use #(line, index) <- list.filter_map(
       list.transpose(graphemes)
@@ -65,7 +63,7 @@ fn parse(input: String) -> State {
   }
 
   let grid = {
-    use #(position, node) <- list.filter_map(lib.grid(graphemes))
+    use #(position, node) <- list.filter_map(vector.grid(graphemes))
     use <- bool.guard(node != "#", Error(Nil))
     Ok(position)
   }

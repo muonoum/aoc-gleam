@@ -2,7 +2,8 @@ import gleam/bool
 import gleam/dict
 import gleam/list
 import gleam/set
-import lib.{type Vector, Vector}
+import lib/int/vector.{type V2, V2}
+import lib/read
 
 pub type Tile {
   Garden
@@ -33,7 +34,7 @@ fn walk(grid, steps) {
   let next =
     set.from_list({
       use position <- list.flat_map(positions)
-      use #(neighbor, tile) <- list.filter_map(lib.neighbors(position, grid))
+      use #(neighbor, tile) <- list.filter_map(vector.neighbors(position, grid))
       use <- bool.guard(tile == Rock, Error(Nil))
       Ok(neighbor)
     })
@@ -42,11 +43,11 @@ fn walk(grid, steps) {
 }
 
 fn parse(input: String) {
-  lib.parse_grid(input)
+  read.grid(input)
   |> list.map(parse_tile)
 }
 
-fn parse_tile(tile: #(Vector, String)) -> #(Vector, Tile) {
+fn parse_tile(tile: #(V2, String)) -> #(V2, Tile) {
   let #(position, grapheme) = tile
   case grapheme {
     "#" -> #(position, Rock)

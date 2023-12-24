@@ -2,22 +2,20 @@ import gleam/int
 import gleam/list
 import gleam/result
 import gleam/string
+import lib/read
 
 pub fn part1(input: String) -> Int {
   int.sum({
-    use line <- list.filter_map(string.split(input, "\n"))
-
-    join(
-      string.to_graphemes(line)
-      |> list.filter_map(int.parse),
-    )
+    use line <- list.filter_map(read.lines(input))
+    string.to_graphemes(line)
+    |> list.filter_map(int.parse)
+    |> join
   })
 }
 
 fn join(input: List(Int)) -> Result(Int, Nil) {
   use first <- result.try(list.first(input))
   use last <- result.try(list.last(input))
-
   int.undigits([first, last], 10)
   |> result.nil_error
 }

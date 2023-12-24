@@ -1,6 +1,7 @@
 import gleam/int
 import gleam/list
 import gleam/string
+import lib/read
 
 pub fn part1(input: String) -> Int {
   int.product({
@@ -40,23 +41,17 @@ pub fn part2(input: String) -> Int {
 }
 
 fn parse(input) {
-  let lines = string.split(input, "\n")
+  let lines = read.lines(input)
 
   let assert #(times, records) = {
     use #(times, records), line <- list.fold(lines, #([], []))
 
     case line {
-      "Time:" <> v -> #(numbers(v), records)
-      "Distance:" <> v -> #(times, numbers(v))
+      "Time:" <> v -> #(read.fields(v, " "), records)
+      "Distance:" <> v -> #(times, read.fields(v, " "))
       _ -> #(times, records)
     }
   }
 
   #(times, records)
-}
-
-fn numbers(v) {
-  string.split(v, " ")
-  |> list.map(string.trim)
-  |> list.filter(fn(v) { v != "" })
 }

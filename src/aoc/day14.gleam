@@ -5,14 +5,15 @@ import gleam/iterator
 import gleam/list
 import gleam/pair
 import gleam/string
-import lib.{type Vector, Vector}
+import lib/int/vector.{type V2, V2}
+import lib/read
 
 pub type Dish {
-  Dish(rocks: Rocks, limit: Vector)
+  Dish(rocks: Rocks, limit: V2)
 }
 
 pub type Rocks =
-  List(#(Vector, Rock))
+  List(#(V2, Rock))
 
 pub type Rock {
   Rounded
@@ -31,28 +32,29 @@ pub fn part2(input: String) -> Int {
   let dish = parse(input)
 
   let cycles = 1_000_000_000
-  let seen = dict.new()
-  let iter = {
-    let cycle =
+  let loop = {
+    use seen, #(dish, index) <- iterator.transform(
       iterator.iterate(dish, cycle)
-      |> iterator.index
-    use seen, #(dish, index) <- iterator.transform(cycle, seen)
+      |> iterator.index,
+      dict.new(),
+    )
+
     case dict.get(seen, dish.rocks) {
       Error(Nil) -> {
         let seen = dict.insert(seen, dish.rocks, index + 1)
-        iterator.Next(#(dish, seen, index), seen)
+        iterator.Next(#(dish, seen), seen)
       }
 
       Ok(previous) -> {
         case { cycles - index } % { previous - index } {
           0 -> iterator.Done
-          _ -> iterator.Next(#(dish, seen, index), seen)
+          _ -> iterator.Next(#(dish, seen), seen)
         }
       }
     }
   }
 
-  let assert Ok(#(dish, seen, _)) = iterator.last(iter)
+  let assert Ok(#(dish, seen)) = iterator.last(loop)
   let assert Ok(loop) = dict.get(seen, dish.rocks)
   let next = { cycles / loop } * loop
 
@@ -91,10 +93,9 @@ fn tilt_north(dish: Dish) {
 
     pair.second({
       use y, #(position, rock) <- list.map_fold(column, 0)
-
       case rock {
         Cubed -> #(position.y + 1, #(position, rock))
-        Rounded -> #(y + 1, #(Vector(position.x, y), rock))
+        Rounded -> #(y + 1, #(V2(position.x, y), rock))
       }
     })
   }
@@ -114,10 +115,9 @@ fn tilt_south(dish: Dish) {
 
     pair.second({
       use y, #(position, rock) <- list.map_fold(group, limit.y)
-
       case rock {
         Cubed -> #(position.y - 1, #(position, rock))
-        Rounded -> #(y - 1, #(Vector(position.x, y), rock))
+        Rounded -> #(y - 1, #(V2(position.x, y), rock))
       }
     })
   }
@@ -140,7 +140,7 @@ fn tilt_west(dish: Dish) {
 
       case rock {
         Cubed -> #(position.x + 1, #(position, rock))
-        Rounded -> #(x + 1, #(Vector(x, position.y), rock))
+        Rounded -> #(x + 1, #(V2(x, position.y), rock))
       }
     })
   }
@@ -163,7 +163,7 @@ fn tilt_east(dish: Dish) {
 
       case rock {
         Cubed -> #(position.x - 1, #(position, rock))
-        Rounded -> #(x - 1, #(Vector(x, position.y), rock))
+        Rounded -> #(x - 1, #(V2(x, position.y), rock))
       }
     })
   }
@@ -186,11 +186,11 @@ fn rows(rocks: Rocks) {
 }
 
 pub fn parse(input: String) -> Dish {
-  let assert [first_line, ..] as lines = lib.lines(input)
-  let limit = Vector(string.length(first_line) - 1, list.length(lines) - 1)
+  let assert [first_line, ..] as lines = read.lines(input)
+  let limit = V2(string.length(first_line) - 1, list.length(lines) - 1)
 
   let rocks = {
-    let grid = lib.parse_grid(input)
+    let grid = read.grid(input)
     use #(position, grapheme) <- list.filter_map(grid)
     parse_grapheme(grapheme, position)
   }
@@ -198,7 +198,7 @@ pub fn parse(input: String) -> Dish {
   Dish(rocks, limit)
 }
 
-fn parse_grapheme(grapheme: String, position: Vector) {
+fn parse_grapheme(grapheme: String, position: V2) {
   case grapheme {
     "O" -> Ok(#(position, Rounded))
     "#" -> Ok(#(position, Cubed))

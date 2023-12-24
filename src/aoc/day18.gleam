@@ -1,7 +1,9 @@
 import gleam/int
 import gleam/list
 import gleam/string
-import lib.{type Vector, Vector}
+import lib
+import lib/int/vector.{type V2, V2}
+import lib/read
 
 pub type Direction {
   Right
@@ -11,7 +13,7 @@ pub type Direction {
 }
 
 pub type Trench {
-  Trench(points: List(Vector), perimeter: Int)
+  Trench(points: List(V2), perimeter: Int)
 }
 
 pub type Plan =
@@ -38,7 +40,7 @@ fn run(plan: Plan) -> Int {
   area + perimeter + 1
 }
 
-fn area(points: List(Vector)) -> Result(Int, Nil) {
+fn area(points: List(V2)) -> Result(Int, Nil) {
   use <- lib.return(int.divide(_, 2))
   use <- lib.return(int.sum)
   use #(current, next) <- list.map(list.window_by_2(points))
@@ -47,17 +49,16 @@ fn area(points: List(Vector)) -> Result(Int, Nil) {
 
 fn dig(plan: Plan) -> Trench {
   use <- reverse_points
-  use state, step <- list.fold(plan, Trench([Vector(0, 0)], 0))
+  use state, step <- list.fold(plan, Trench([V2(0, 0)], 0))
   let #(direction, distance) = step
   let points =
     list.prepend(state.points, case direction, state.points {
-      Right, [Vector(x, y), ..] -> Vector(x + distance, y)
-      Down, [Vector(x, y), ..] -> Vector(x, y + distance)
-      Up, [Vector(x, y), ..] -> Vector(x, y - distance)
-      Left, [Vector(x, y), ..] -> Vector(x - distance, y)
+      Right, [V2(x, y), ..] -> V2(x + distance, y)
+      Down, [V2(x, y), ..] -> V2(x, y + distance)
+      Up, [V2(x, y), ..] -> V2(x, y - distance)
+      Left, [V2(x, y), ..] -> V2(x - distance, y)
       _, _ -> panic
     })
-
   Trench(points, state.perimeter + distance)
 }
 
@@ -67,7 +68,7 @@ fn reverse_points(to_trench: fn() -> Trench) -> Trench {
 }
 
 pub fn parse(input: String) {
-  use line <- list.map(lib.lines(input))
+  use line <- list.map(read.lines(input))
   let assert [direction, distance, color] = string.split(line, " ")
   let direction1 = parse_direction(direction)
   let assert Ok(distance1) = int.parse(distance)
@@ -76,20 +77,13 @@ pub fn parse(input: String) {
 }
 
 fn parse_color(color: String) -> #(Direction, Int) {
-  let assert [last, ..rest] =
-    list.reverse({
-      string.to_graphemes(color)
-      |> list.filter_map(int.base_parse(_, 16))
-    })
-
+  let assert [last, ..rest] = list.reverse(read.hex(color))
   let assert Ok(distance) =
     list.reverse(rest)
     |> int.undigits(16)
-
   let direction =
     int.to_string(last)
     |> parse_direction
-
   #(direction, distance)
 }
 

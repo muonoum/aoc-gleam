@@ -4,6 +4,7 @@ import gleam/list
 import gleam/pair
 import gleam/set.{type Set}
 import gleam/string
+import lib/read
 
 pub type Position =
   #(Int, Int)
@@ -56,12 +57,8 @@ pub fn part2(input: String) -> Int {
 
 fn parse(from input: String) -> Schematic {
   use state, tokens, row <- list.index_fold(from: Schematic([], []), over: {
-    use string <- list.map(
-      string.split(input, on: "\n")
-      |> list.filter(non_empty),
-    )
-
-    string.to_graphemes(string)
+    use line <- list.map(read.lines(input))
+    string.to_graphemes(line)
     |> list.index_fold([], parse_grapheme)
     |> list.reverse
   })
@@ -111,10 +108,6 @@ fn try_ratio(pair: List(Int)) -> Result(Int, Nil) {
     [a, b] -> Ok(a * b)
     _ -> Error(Nil)
   }
-}
-
-fn non_empty(line: String) -> Bool {
-  line != ""
 }
 
 fn is_gear(part: Part) -> Bool {
