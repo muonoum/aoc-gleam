@@ -1,3 +1,17 @@
+import gleam/dict
+import gleam/erlang
+import gleam/int
+import gleam/io
+import gleam/string
+import simplifile
+// 2015
+import aoc15/day01 as day1501
+import aoc15/day02 as day1502
+// 2022
+import aoc22/day01 as day2201
+import aoc22/day02 as day2202
+import aoc22/day03 as day2203
+// 2023
 import aoc23/day01 as day2301
 import aoc23/day02 as day2302
 import aoc23/day03 as day2303
@@ -18,16 +32,6 @@ import aoc23/day19 as day2319
 import aoc23/day21 as day2321
 import aoc23/day24 as day2324
 import aoc23/day25 as day2325
-import aoc22/day01 as day2201
-import aoc22/day02 as day2202
-import aoc15/day01 as day1501
-import aoc15/day02 as day1502
-import gleam/dict
-import gleam/erlang
-import gleam/int
-import gleam/io
-import gleam/string
-import simplifile
 
 @external(erlang, "timer", "tc")
 fn time(fun: fn() -> a) -> #(Int, a)
@@ -61,6 +65,7 @@ pub fn aoc22() {
   dict.from_list([
     #(01, #(day2201.part1, day2201.part2, "inputs/2022/day01.txt")),
     #(02, #(day2202.part1, day2202.part2, "inputs/2022/day02.txt")),
+    #(03, #(day2203.part1, day2203.part2, "inputs/2022/day03.txt")),
   ])
 }
 
