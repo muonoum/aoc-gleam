@@ -12,6 +12,8 @@ import aoc22/day01 as day2201
 import aoc22/day02 as day2202
 import aoc22/day03 as day2203
 import aoc22/day04 as day2204
+import aoc22/day05 as day2205
+import aoc22/day06 as day2206
 // 2023
 import aoc23/day01 as day2301
 import aoc23/day02 as day2302
@@ -64,10 +66,12 @@ pub fn aoc23() {
 
 pub fn aoc22() {
   dict.from_list([
-    #(01, #(day2201.part1, day2201.part2, "inputs/2022/day01.txt")),
-    #(02, #(day2202.part1, day2202.part2, "inputs/2022/day02.txt")),
-    #(03, #(day2203.part1, day2203.part2, "inputs/2022/day03.txt")),
-    #(04, #(day2204.part1, day2204.part2, "inputs/2022/day04.txt")),
+    #(01, #(day2201.part1, day2201.part2, "inputs/22/day01.txt")),
+    #(02, #(day2202.part1, day2202.part2, "inputs/22/day02.txt")),
+    #(03, #(day2203.part1, day2203.part2, "inputs/22/day03.txt")),
+    #(04, #(day2204.part1, day2204.part2, "inputs/22/day04.txt")),
+    #(05, #(day2205.part1, day2205.part2, "inputs/22/day05.txt")),
+    #(06, #(day2206.part1, day2206.part2, "inputs/22/day06.txt")),
   ])
 }
 
