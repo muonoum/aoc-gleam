@@ -41,26 +41,26 @@ fn time(fun: fn() -> a) -> #(Int, a)
 
 pub fn aoc23() {
   dict.from_list([
-    #(01, #(day2301.part1, day2301.part2, "inputs/2023/day01.txt")),
-    #(02, #(day2302.part1, day2302.part2, "inputs/2023/day02.txt")),
-    #(03, #(day2303.part1, day2303.part2, "inputs/2023/day03.txt")),
-    #(04, #(day2304.part1, day2304.part2, "inputs/2023/day04.txt")),
-    #(05, #(day2305.part1, day2305.part2, "inputs/2023/day05.txt")),
-    #(06, #(day2306.part1, day2306.part2, "inputs/2023/day06.txt")),
-    #(07, #(day2307.part1, day2307.part2, "inputs/2023/day07.txt")),
-    #(08, #(day2308.part1, day2308.part2, "inputs/2023/day08.txt")),
-    #(09, #(day2309.part1, day2309.part2, "inputs/2023/day09.txt")),
-    #(10, #(day2310.part1, day2310.part2, "inputs/2023/day10.txt")),
-    #(11, #(day2311.part1, day2311.part2, "inputs/2023/day11.txt")),
-    #(13, #(day2313.part1, day2313.part2, "inputs/2023/day13.txt")),
-    #(14, #(day2314.part1, day2314.part2, "inputs/2023/day14.txt")),
-    #(15, #(day2315.part1, day2315.part2, "inputs/2023/day15.txt")),
-    #(16, #(day2316.part1, day2316.part2, "inputs/2023/day16.txt")),
-    #(18, #(day2318.part1, day2318.part2, "inputs/2023/day18.txt")),
-    #(19, #(day2319.part1, day2319.part2, "inputs/2023/day19.txt")),
-    #(21, #(day2321.part1, day2321.part2, "inputs/2023/day21.txt")),
-    #(24, #(day2324.part1, day2324.part2, "inputs/2023/day24.txt")),
-    #(25, #(day2325.part1, day2325.part2, "inputs/2023/day25.txt")),
+    #(01, #(day2301.part1, day2301.part2, "inputs/23/day01.txt")),
+    #(02, #(day2302.part1, day2302.part2, "inputs/23/day02.txt")),
+    #(03, #(day2303.part1, day2303.part2, "inputs/23/day03.txt")),
+    #(04, #(day2304.part1, day2304.part2, "inputs/23/day04.txt")),
+    #(05, #(day2305.part1, day2305.part2, "inputs/23/day05.txt")),
+    #(06, #(day2306.part1, day2306.part2, "inputs/23/day06.txt")),
+    #(07, #(day2307.part1, day2307.part2, "inputs/23/day07.txt")),
+    #(08, #(day2308.part1, day2308.part2, "inputs/23/day08.txt")),
+    #(09, #(day2309.part1, day2309.part2, "inputs/23/day09.txt")),
+    #(10, #(day2310.part1, day2310.part2, "inputs/23/day10.txt")),
+    #(11, #(day2311.part1, day2311.part2, "inputs/23/day11.txt")),
+    #(13, #(day2313.part1, day2313.part2, "inputs/23/day13.txt")),
+    #(14, #(day2314.part1, day2314.part2, "inputs/23/day14.txt")),
+    #(15, #(day2315.part1, day2315.part2, "inputs/23/day15.txt")),
+    #(16, #(day2316.part1, day2316.part2, "inputs/23/day16.txt")),
+    #(18, #(day2318.part1, day2318.part2, "inputs/23/day18.txt")),
+    #(19, #(day2319.part1, day2319.part2, "inputs/23/day19.txt")),
+    #(21, #(day2321.part1, day2321.part2, "inputs/23/day21.txt")),
+    #(24, #(day2324.part1, day2324.part2, "inputs/23/day24.txt")),
+    #(25, #(day2325.part1, day2325.part2, "inputs/23/day25.txt")),
   ])
 }
 
@@ -77,8 +77,8 @@ pub fn aoc22() {
 
 pub fn aoc15() {
   dict.from_list([
-    #(01, #(day1501.part1, day1501.part2, "inputs/2015/day01.txt")),
-    #(02, #(day1502.part1, day1502.part2, "inputs/2015/day02.txt")),
+    #(01, #(day1501.part1, day1501.part2, "inputs/15/day01.txt")),
+    #(02, #(day1502.part1, day1502.part2, "inputs/15/day02.txt")),
   ])
 }
 

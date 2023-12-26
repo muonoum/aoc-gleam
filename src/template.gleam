@@ -9,6 +9,7 @@ import gleam/result as _
 import gleam/set as _
 import gleam/string as _
 import lib as _
+import lib/read as _
 
 pub fn part1(_input: String) -> Int {
   -1
