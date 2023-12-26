@@ -18,8 +18,19 @@ pub fn part1(input: String) -> Int {
   })
 }
 
-pub fn part2(_input: String) -> Int {
-  -1
+pub fn part2(input: String) -> Int {
+  let sacks = {
+    use #(a, b) <- list.map(parse(input))
+    set.union(a, b)
+  }
+
+  int.sum({
+    use group <- list.flat_map(list.sized_chunk(sacks, 3))
+    let assert [a, b, c] = group
+    set.intersection(a, set.intersection(b, c))
+    |> set.to_list
+    |> list.map(pair.second)
+  })
 }
 
 pub fn parse(input: String) -> List(#(Compartment, Compartment)) {
