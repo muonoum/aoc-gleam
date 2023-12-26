@@ -6,7 +6,6 @@ import gleam/iterator.{type Iterator}
 import gleam/list
 import gleam/option
 import gleam/result
-import gleam/set
 import lib/int/vector.{type V2, V2}
 import lib/read
 
@@ -29,10 +28,9 @@ pub type Instruction {
 
 pub fn part1(input: String) -> Int {
   let machine = load(input)
-  let cycles = set.from_list([20, 60, 100, 140, 180, 220])
   use signal, machine <- iterator.fold_until(machine, 0)
   use <- bool.guard(machine.program == [], list.Stop(signal))
-  use <- bool.guard(!set.contains(cycles, machine.cycle), list.Continue(signal))
+  use <- bool.guard(machine.cycle % 40 != 20, list.Continue(signal))
   let assert Ok(x) = dict.get(machine.registers, X)
   list.Continue(signal + machine.cycle * x)
 }
@@ -42,11 +40,13 @@ pub fn part2(input: String) -> Int {
     let machine = load(input)
     use display, machine <- iterator.fold_until(machine, dict.new())
     use <- bool.guard(machine.program == [], list.Stop(display))
-    let assert Ok(sprite) = dict.get(machine.registers, X)
-    let sprite = set.from_list([sprite - 1, sprite, sprite + 1])
-    let position = V2(machine.cycle % 40 - 1, { machine.cycle - 1 } / 40)
-    use <- bool.guard(!set.contains(sprite, position.x), list.Continue(display))
-    list.Continue(dict.insert(display, position, "#"))
+
+    list.Continue({
+      let assert Ok(sprite) = dict.get(machine.registers, X)
+      let pixel = V2(machine.cycle % 40 - 1, { machine.cycle - 1 } / 40)
+      use <- bool.guard(pixel.x < sprite - 1 || pixel.x > sprite + 1, display)
+      dict.insert(display, pixel, "#")
+    })
   })
 
   -1

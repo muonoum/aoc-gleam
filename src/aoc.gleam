@@ -5,87 +5,92 @@ import gleam/io
 import gleam/string
 import simplifile
 // 2015
-import aoc15/day01 as day1501
-import aoc15/day02 as day1502
+import year15/day01 as year15day01
+import year15/day02 as year15day02
 // 2022
-import aoc22/day01 as day2201
-import aoc22/day02 as day2202
-import aoc22/day03 as day2203
-import aoc22/day04 as day2204
-import aoc22/day05 as day2205
-import aoc22/day06 as day2206
-import aoc22/day10 as day2210
+import year22/day01 as year22day01
+import year22/day02 as year22day02
+import year22/day03 as year22day03
+import year22/day04 as year22day04
+import year22/day05 as year22day05
+import year22/day06 as year22day06
+import year22/day10 as year22day10
 // 2023
-import aoc23/day01 as day2301
-import aoc23/day02 as day2302
-import aoc23/day03 as day2303
-import aoc23/day04 as day2304
-import aoc23/day05 as day2305
-import aoc23/day06 as day2306
-import aoc23/day07 as day2307
-import aoc23/day08 as day2308
-import aoc23/day09 as day2309
-import aoc23/day10 as day2310
-import aoc23/day11 as day2311
-import aoc23/day13 as day2313
-import aoc23/day14 as day2314
-import aoc23/day15 as day2315
-import aoc23/day16 as day2316
-import aoc23/day18 as day2318
-import aoc23/day19 as day2319
-import aoc23/day21 as day2321
-import aoc23/day24 as day2324
-import aoc23/day25 as day2325
+import year23/day01 as year23day01
+import year23/day02 as year23day02
+import year23/day03 as year23day03
+import year23/day04 as year23day04
+import year23/day05 as year23day05
+import year23/day06 as year23day06
+import year23/day07 as year23day07
+import year23/day08 as year23day08
+import year23/day09 as year23day09
+import year23/day10 as year23day10
+import year23/day11 as year23day11
+import year23/day13 as year23day13
+import year23/day14 as year23day14
+import year23/day15 as year23day15
+import year23/day16 as year23day16
+import year23/day18 as year23day18
+import year23/day19 as year23day19
+import year23/day21 as year23day21
+import year23/day24 as year23day24
+import year23/day25 as year23day25
 
 @external(erlang, "timer", "tc")
 fn time(fun: fn() -> a) -> #(Int, a)
 
-pub fn aoc23() {
+pub fn year15() {
   dict.from_list([
-    #(01, #(day2301.part1, day2301.part2, "inputs/23/day01.txt")),
-    #(02, #(day2302.part1, day2302.part2, "inputs/23/day02.txt")),
-    #(03, #(day2303.part1, day2303.part2, "inputs/23/day03.txt")),
-    #(04, #(day2304.part1, day2304.part2, "inputs/23/day04.txt")),
-    #(05, #(day2305.part1, day2305.part2, "inputs/23/day05.txt")),
-    #(06, #(day2306.part1, day2306.part2, "inputs/23/day06.txt")),
-    #(07, #(day2307.part1, day2307.part2, "inputs/23/day07.txt")),
-    #(08, #(day2308.part1, day2308.part2, "inputs/23/day08.txt")),
-    #(09, #(day2309.part1, day2309.part2, "inputs/23/day09.txt")),
-    #(10, #(day2310.part1, day2310.part2, "inputs/23/day10.txt")),
-    #(11, #(day2311.part1, day2311.part2, "inputs/23/day11.txt")),
-    #(13, #(day2313.part1, day2313.part2, "inputs/23/day13.txt")),
-    #(14, #(day2314.part1, day2314.part2, "inputs/23/day14.txt")),
-    #(15, #(day2315.part1, day2315.part2, "inputs/23/day15.txt")),
-    #(16, #(day2316.part1, day2316.part2, "inputs/23/day16.txt")),
-    #(18, #(day2318.part1, day2318.part2, "inputs/23/day18.txt")),
-    #(19, #(day2319.part1, day2319.part2, "inputs/23/day19.txt")),
-    #(21, #(day2321.part1, day2321.part2, "inputs/23/day21.txt")),
-    #(24, #(day2324.part1, day2324.part2, "inputs/23/day24.txt")),
-    #(25, #(day2325.part1, day2325.part2, "inputs/23/day25.txt")),
+    #(01, #(year15day01.part1, year15day01.part2, "inputs/15/day01.txt")),
+    #(02, #(year15day02.part1, year15day02.part2, "inputs/15/day02.txt")),
   ])
 }
 
-pub fn aoc22() {
+pub fn year22() {
   dict.from_list([
-    #(01, #(day2201.part1, day2201.part2, "inputs/22/day01.txt")),
-    #(02, #(day2202.part1, day2202.part2, "inputs/22/day02.txt")),
-    #(03, #(day2203.part1, day2203.part2, "inputs/22/day03.txt")),
-    #(04, #(day2204.part1, day2204.part2, "inputs/22/day04.txt")),
-    #(05, #(day2205.part1, day2205.part2, "inputs/22/day05.txt")),
-    #(06, #(day2206.part1, day2206.part2, "inputs/22/day06.txt")),
-    #(10, #(day2210.part1, day2210.part2, "inputs/22/day10.txt")),
+    #(01, #(year22day01.part1, year22day01.part2, "inputs/22/day01.txt")),
+    #(02, #(year22day02.part1, year22day02.part2, "inputs/22/day02.txt")),
+    #(03, #(year22day03.part1, year22day03.part2, "inputs/22/day03.txt")),
+    #(04, #(year22day04.part1, year22day04.part2, "inputs/22/day04.txt")),
+    #(05, #(year22day05.part1, year22day05.part2, "inputs/22/day05.txt")),
+    #(06, #(year22day06.part1, year22day06.part2, "inputs/22/day06.txt")),
+    #(10, #(year22day10.part1, year22day10.part2, "inputs/22/day10.txt")),
   ])
 }
 
-pub fn aoc15() {
+pub fn year23() {
   dict.from_list([
-    #(01, #(day1501.part1, day1501.part2, "inputs/15/day01.txt")),
-    #(02, #(day1502.part1, day1502.part2, "inputs/15/day02.txt")),
+    #(01, #(year23day01.part1, year23day01.part2, "inputs/23/day01.txt")),
+    #(02, #(year23day02.part1, year23day02.part2, "inputs/23/day02.txt")),
+    #(03, #(year23day03.part1, year23day03.part2, "inputs/23/day03.txt")),
+    #(04, #(year23day04.part1, year23day04.part2, "inputs/23/day04.txt")),
+    #(05, #(year23day05.part1, year23day05.part2, "inputs/23/day05.txt")),
+    #(06, #(year23day06.part1, year23day06.part2, "inputs/23/day06.txt")),
+    #(07, #(year23day07.part1, year23day07.part2, "inputs/23/day07.txt")),
+    #(08, #(year23day08.part1, year23day08.part2, "inputs/23/day08.txt")),
+    #(09, #(year23day09.part1, year23day09.part2, "inputs/23/day09.txt")),
+    #(10, #(year23day10.part1, year23day10.part2, "inputs/23/day10.txt")),
+    #(11, #(year23day11.part1, year23day11.part2, "inputs/23/day11.txt")),
+    #(13, #(year23day13.part1, year23day13.part2, "inputs/23/day13.txt")),
+    #(14, #(year23day14.part1, year23day14.part2, "inputs/23/day14.txt")),
+    #(15, #(year23day15.part1, year23day15.part2, "inputs/23/day15.txt")),
+    #(16, #(year23day16.part1, year23day16.part2, "inputs/23/day16.txt")),
+    #(18, #(year23day18.part1, year23day18.part2, "inputs/23/day18.txt")),
+    #(19, #(year23day19.part1, year23day19.part2, "inputs/23/day19.txt")),
+    #(21, #(year23day21.part1, year23day21.part2, "inputs/23/day21.txt")),
+    #(24, #(year23day24.part1, year23day24.part2, "inputs/23/day24.txt")),
+    #(25, #(year23day25.part1, year23day25.part2, "inputs/23/day25.txt")),
   ])
 }
 
 pub fn main() {
-  let years = dict.from_list([#(15, aoc15()), #(22, aoc22()), #(23, aoc23())])
+  let years =
+    dict.from_list([
+      #(15, year15()),
+      #(22, year22()),
+      #(23, year23()),
+    ])
 
   case erlang.start_arguments() {
     [year, day] -> {
