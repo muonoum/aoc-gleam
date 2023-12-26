@@ -14,6 +14,7 @@ import aoc22/day03 as day2203
 import aoc22/day04 as day2204
 import aoc22/day05 as day2205
 import aoc22/day06 as day2206
+import aoc22/day10 as day2210
 // 2023
 import aoc23/day01 as day2301
 import aoc23/day02 as day2302
@@ -72,6 +73,7 @@ pub fn aoc22() {
     #(04, #(day2204.part1, day2204.part2, "inputs/22/day04.txt")),
     #(05, #(day2205.part1, day2205.part2, "inputs/22/day05.txt")),
     #(06, #(day2206.part1, day2206.part2, "inputs/22/day06.txt")),
+    #(10, #(day2210.part1, day2210.part2, "inputs/22/day10.txt")),
   ])
 }
 
