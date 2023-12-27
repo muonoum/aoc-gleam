@@ -18,6 +18,7 @@ import year22/day03 as year22day03
 import year22/day04 as year22day04
 import year22/day05 as year22day05
 import year22/day06 as year22day06
+import year22/day07 as year22day07
 import year22/day10 as year22day10
 // 2023
 import year23/day01 as year23day01
@@ -71,6 +72,7 @@ pub fn year22() {
     #(04, #(year22day04.part1, year22day04.part2, "data/year22/day04.txt")),
     #(05, #(year22day05.part1, year22day05.part2, "data/year22/day05.txt")),
     #(06, #(year22day06.part1, year22day06.part2, "data/year22/day06.txt")),
+    #(07, #(year22day07.part1, year22day07.part2, "data/year22/day07.txt")),
     #(10, #(year22day10.part1, year22day10.part2, "data/year22/day10.txt")),
   ])
 }
