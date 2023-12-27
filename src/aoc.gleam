@@ -7,6 +7,8 @@ import simplifile
 // 2015
 import year15/day01 as year15day01
 import year15/day02 as year15day02
+// 2021
+import year21/day01 as year21day01
 // 2022
 import year22/day01 as year22day01
 import year22/day02 as year22day02
@@ -44,6 +46,12 @@ pub fn year15() {
   dict.from_list([
     #(01, #(year15day01.part1, year15day01.part2, "inputs/15/day01.txt")),
     #(02, #(year15day02.part1, year15day02.part2, "inputs/15/day02.txt")),
+  ])
+}
+
+pub fn year21() {
+  dict.from_list([
+    #(01, #(year21day01.part1, year21day01.part2, "inputs/21/day01.txt")),
   ])
 }
 
@@ -88,6 +96,7 @@ pub fn main() {
   let years =
     dict.from_list([
       #(15, year15()),
+      #(21, year21()),
       #(22, year22()),
       #(23, year23()),
     ])
