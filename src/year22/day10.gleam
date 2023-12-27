@@ -5,7 +5,7 @@ import gleam/io
 import gleam/iterator.{type Iterator}
 import gleam/list
 import gleam/option
-import gleam/result
+import gleam/set.{type Set}
 import lib/int/vector.{type V2, V2}
 import lib/read
 
@@ -38,31 +38,32 @@ pub fn part1(input: String) -> Int {
 pub fn part2(input: String) -> Int {
   render({
     let machine = load(input)
-    use display, machine <- iterator.fold_until(machine, dict.new())
+    use display, machine <- iterator.fold_until(machine, set.new())
     use <- bool.guard(machine.program == [], list.Stop(display))
 
     list.Continue({
       let assert Ok(sprite) = dict.get(machine.registers, X)
       let pixel = V2(machine.cycle % 40 - 1, { machine.cycle - 1 } / 40)
       use <- bool.guard(pixel.x < sprite - 1 || pixel.x > sprite + 1, display)
-      dict.insert(display, pixel, "#")
+      set.insert(display, pixel)
     })
   })
 
   -1
 }
 
-fn render(display: Dict(V2, String)) {
+fn render(display: Set(V2)) {
   use y <- list.map(list.range(0, 5))
   render_row(y, display)
   io.println("")
 }
 
-fn render_row(y: Int, display: Dict(V2, String)) {
+fn render_row(y: Int, display: Set(V2)) {
   use x <- list.map(list.range(0, 39))
-  dict.get(display, V2(x, y))
-  |> result.unwrap(".")
-  |> io.print
+  case set.contains(display, V2(x, y)) {
+    True -> io.print("\u{2593}")
+    False -> io.print(" ")
+  }
 }
 
 fn load(source: String) -> Iterator(Machine) {
@@ -76,8 +77,8 @@ fn load(source: String) -> Iterator(Machine) {
     [] -> machine
 
     [#(instruction, 1), ..program] -> {
-      let machine = execute(instruction, machine)
-      Machine(..machine, program: program)
+      let registers = update(machine, instruction)
+      Machine(..machine, program: program, registers: registers)
     }
 
     [#(instruction, cycles), ..program] -> {
@@ -87,35 +88,27 @@ fn load(source: String) -> Iterator(Machine) {
   }
 }
 
-fn execute(instruction: Instruction, machine: Machine) -> Machine {
+fn update(machine: Machine, instruction: Instruction) -> Dict(Register, Int) {
   case instruction {
-    Noop -> machine
+    Noop -> machine.registers
 
     Add(register, number) -> {
-      Machine(
-        ..machine,
-        registers: {
-          use content <- dict.update(machine.registers, register)
-          option.map(content, int.add(_, number))
-          |> option.unwrap(number)
-        },
-      )
+      use content <- dict.update(machine.registers, register)
+      option.map(content, int.add(_, number))
+      |> option.unwrap(number)
     }
   }
 }
 
 pub fn parse(input: String) {
   use line <- list.map(read.lines(input))
-  parse_instruction(line)
-}
 
-fn parse_instruction(line: String) -> #(Instruction, Int) {
   case line {
+    "noop" -> #(Noop, 1)
     "addx " <> number -> {
       let assert Ok(number) = int.parse(number)
       #(Add(X, number), 2)
     }
-    "noop" -> #(Noop, 1)
     _else -> panic
   }
 }
