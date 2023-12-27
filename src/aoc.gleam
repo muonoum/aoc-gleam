@@ -44,51 +44,51 @@ fn time(fun: fn() -> a) -> #(Int, a)
 
 pub fn year15() {
   dict.from_list([
-    #(01, #(year15day01.part1, year15day01.part2, "inputs/15/day01.txt")),
-    #(02, #(year15day02.part1, year15day02.part2, "inputs/15/day02.txt")),
+    #(01, #(year15day01.part1, year15day01.part2, "data/year15/day01.txt")),
+    #(02, #(year15day02.part1, year15day02.part2, "data/year15/day02.txt")),
   ])
 }
 
 pub fn year21() {
   dict.from_list([
-    #(01, #(year21day01.part1, year21day01.part2, "inputs/21/day01.txt")),
+    #(01, #(year21day01.part1, year21day01.part2, "data/year21/day01.txt")),
   ])
 }
 
 pub fn year22() {
   dict.from_list([
-    #(01, #(year22day01.part1, year22day01.part2, "inputs/22/day01.txt")),
-    #(02, #(year22day02.part1, year22day02.part2, "inputs/22/day02.txt")),
-    #(03, #(year22day03.part1, year22day03.part2, "inputs/22/day03.txt")),
-    #(04, #(year22day04.part1, year22day04.part2, "inputs/22/day04.txt")),
-    #(05, #(year22day05.part1, year22day05.part2, "inputs/22/day05.txt")),
-    #(06, #(year22day06.part1, year22day06.part2, "inputs/22/day06.txt")),
-    #(10, #(year22day10.part1, year22day10.part2, "inputs/22/day10.txt")),
+    #(01, #(year22day01.part1, year22day01.part2, "data/year22/day01.txt")),
+    #(02, #(year22day02.part1, year22day02.part2, "data/year22/day02.txt")),
+    #(03, #(year22day03.part1, year22day03.part2, "data/year22/day03.txt")),
+    #(04, #(year22day04.part1, year22day04.part2, "data/year22/day04.txt")),
+    #(05, #(year22day05.part1, year22day05.part2, "data/year22/day05.txt")),
+    #(06, #(year22day06.part1, year22day06.part2, "data/year22/day06.txt")),
+    #(10, #(year22day10.part1, year22day10.part2, "data/year22/day10.txt")),
   ])
 }
 
 pub fn year23() {
   dict.from_list([
-    #(01, #(year23day01.part1, year23day01.part2, "inputs/23/day01.txt")),
-    #(02, #(year23day02.part1, year23day02.part2, "inputs/23/day02.txt")),
-    #(03, #(year23day03.part1, year23day03.part2, "inputs/23/day03.txt")),
-    #(04, #(year23day04.part1, year23day04.part2, "inputs/23/day04.txt")),
-    #(05, #(year23day05.part1, year23day05.part2, "inputs/23/day05.txt")),
-    #(06, #(year23day06.part1, year23day06.part2, "inputs/23/day06.txt")),
-    #(07, #(year23day07.part1, year23day07.part2, "inputs/23/day07.txt")),
-    #(08, #(year23day08.part1, year23day08.part2, "inputs/23/day08.txt")),
-    #(09, #(year23day09.part1, year23day09.part2, "inputs/23/day09.txt")),
-    #(10, #(year23day10.part1, year23day10.part2, "inputs/23/day10.txt")),
-    #(11, #(year23day11.part1, year23day11.part2, "inputs/23/day11.txt")),
-    #(13, #(year23day13.part1, year23day13.part2, "inputs/23/day13.txt")),
-    #(14, #(year23day14.part1, year23day14.part2, "inputs/23/day14.txt")),
-    #(15, #(year23day15.part1, year23day15.part2, "inputs/23/day15.txt")),
-    #(16, #(year23day16.part1, year23day16.part2, "inputs/23/day16.txt")),
-    #(18, #(year23day18.part1, year23day18.part2, "inputs/23/day18.txt")),
-    #(19, #(year23day19.part1, year23day19.part2, "inputs/23/day19.txt")),
-    #(21, #(year23day21.part1, year23day21.part2, "inputs/23/day21.txt")),
-    #(24, #(year23day24.part1, year23day24.part2, "inputs/23/day24.txt")),
-    #(25, #(year23day25.part1, year23day25.part2, "inputs/23/day25.txt")),
+    #(01, #(year23day01.part1, year23day01.part2, "data/year23/day01.txt")),
+    #(02, #(year23day02.part1, year23day02.part2, "data/year23/day02.txt")),
+    #(03, #(year23day03.part1, year23day03.part2, "data/year23/day03.txt")),
+    #(04, #(year23day04.part1, year23day04.part2, "data/year23/day04.txt")),
+    #(05, #(year23day05.part1, year23day05.part2, "data/year23/day05.txt")),
+    #(06, #(year23day06.part1, year23day06.part2, "data/year23/day06.txt")),
+    #(07, #(year23day07.part1, year23day07.part2, "data/year23/day07.txt")),
+    #(08, #(year23day08.part1, year23day08.part2, "data/year23/day08.txt")),
+    #(09, #(year23day09.part1, year23day09.part2, "data/year23/day09.txt")),
+    #(10, #(year23day10.part1, year23day10.part2, "data/year23/day10.txt")),
+    #(11, #(year23day11.part1, year23day11.part2, "data/year23/day11.txt")),
+    #(13, #(year23day13.part1, year23day13.part2, "data/year23/day13.txt")),
+    #(14, #(year23day14.part1, year23day14.part2, "data/year23/day14.txt")),
+    #(15, #(year23day15.part1, year23day15.part2, "data/year23/day15.txt")),
+    #(16, #(year23day16.part1, year23day16.part2, "data/year23/day16.txt")),
+    #(18, #(year23day18.part1, year23day18.part2, "data/year23/day18.txt")),
+    #(19, #(year23day19.part1, year23day19.part2, "data/year23/day19.txt")),
+    #(21, #(year23day21.part1, year23day21.part2, "data/year23/day21.txt")),
+    #(24, #(year23day24.part1, year23day24.part2, "data/year23/day24.txt")),
+    #(25, #(year23day25.part1, year23day25.part2, "data/year23/day25.txt")),
   ])
 }
 
