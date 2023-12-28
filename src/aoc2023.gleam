@@ -1,23 +1,23 @@
-import year2023/day01
-import year2023/day02
-import year2023/day03
-import year2023/day04
-import year2023/day05
-import year2023/day06
-import year2023/day07
-import year2023/day08
-import year2023/day09
-import year2023/day10
-import year2023/day11
-import year2023/day13
-import year2023/day14
-import year2023/day15
-import year2023/day16
-import year2023/day18
-import year2023/day19
-import year2023/day21
-import year2023/day24
-import year2023/day25
+import aoc2023/day01
+import aoc2023/day02
+import aoc2023/day03
+import aoc2023/day04
+import aoc2023/day05
+import aoc2023/day06
+import aoc2023/day07
+import aoc2023/day08
+import aoc2023/day09
+import aoc2023/day10
+import aoc2023/day11
+import aoc2023/day13
+import aoc2023/day14
+import aoc2023/day15
+import aoc2023/day16
+import aoc2023/day18
+import aoc2023/day19
+import aoc2023/day21
+import aoc2023/day24
+import aoc2023/day25
 
 pub const days = [
   #(01, #(day01.part1, day01.part2, "data/year23/day01.txt")),

@@ -1,12 +1,12 @@
-import year2022/day01
-import year2022/day02
-import year2022/day03
-import year2022/day04
-import year2022/day05
-import year2022/day06
-import year2022/day07
-import year2022/day08
-import year2022/day10
+import aoc2022/day01
+import aoc2022/day02
+import aoc2022/day03
+import aoc2022/day04
+import aoc2022/day05
+import aoc2022/day06
+import aoc2022/day07
+import aoc2022/day08
+import aoc2022/day10
 
 pub const days = [
   #(01, #(day01.part1, day01.part2, "data/year22/day01.txt")),
