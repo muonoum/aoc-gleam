@@ -6,21 +6,21 @@ import gleam/list
 import gleam/pair
 import gleam/string
 import simplifile
-import year2015
-import year2020
-import year2021
-import year2022
-import year2023
+import aoc2015
+import aoc2020
+import aoc2021
+import aoc2022
+import aoc2023
 
 @external(erlang, "timer", "tc")
 fn time(fun: fn() -> a) -> #(Int, a)
 
 const years = [
-  #(15, year2015.days),
-  #(20, year2020.days),
-  #(21, year2021.days),
-  #(22, year2022.days),
-  #(23, year2023.days),
+  #(15, aoc2015.days),
+  #(20, aoc2020.days),
+  #(21, aoc2021.days),
+  #(22, aoc2022.days),
+  #(23, aoc2023.days),
 ]
 
 pub fn main() {
