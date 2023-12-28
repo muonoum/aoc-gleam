@@ -5,6 +5,7 @@ import year2022/day04
 import year2022/day05
 import year2022/day06
 import year2022/day07
+import year2022/day08
 import year2022/day10
 
 pub const days = [
@@ -15,5 +16,6 @@ pub const days = [
   #(05, #(day05.part1, day05.part2, "data/year22/day05.txt")),
   #(06, #(day06.part1, day06.part2, "data/year22/day06.txt")),
   #(07, #(day07.part1, day07.part2, "data/year22/day07.txt")),
+  #(08, #(day08.part1, day08.part2, "data/year22/day08.txt")),
   #(10, #(day10.part1, day10.part2, "data/year22/day10.txt")),
 ]
