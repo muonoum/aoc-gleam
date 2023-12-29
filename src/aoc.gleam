@@ -11,12 +11,14 @@ import aoc2020
 import aoc2021
 import aoc2022
 import aoc2023
+import aoc2019
 
 @external(erlang, "timer", "tc")
 fn time(fun: fn() -> a) -> #(Int, a)
 
 const years = [
   #(15, aoc2015.days),
+  #(19, aoc2019.days),
   #(20, aoc2020.days),
   #(21, aoc2021.days),
   #(22, aoc2022.days),
