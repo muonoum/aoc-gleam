@@ -1,3 +1,12 @@
+import aoc2015
+import aoc2016
+import aoc2017
+import aoc2018
+import aoc2019
+import aoc2020
+import aoc2021
+import aoc2022
+import aoc2023
 import gleam/dict
 import gleam/erlang
 import gleam/int
@@ -6,18 +15,15 @@ import gleam/list
 import gleam/pair
 import gleam/string
 import simplifile
-import aoc2015
-import aoc2020
-import aoc2021
-import aoc2022
-import aoc2023
-import aoc2019
 
 @external(erlang, "timer", "tc")
 fn time(fun: fn() -> a) -> #(Int, a)
 
 const years = [
   #(15, aoc2015.days),
+  #(16, aoc2016.days),
+  #(17, aoc2017.days),
+  #(18, aoc2018.days),
   #(19, aoc2019.days),
   #(20, aoc2020.days),
   #(21, aoc2021.days),
