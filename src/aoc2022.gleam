@@ -6,6 +6,7 @@ import aoc2022/day05
 import aoc2022/day06
 import aoc2022/day07
 import aoc2022/day08
+import aoc2022/day09
 import aoc2022/day10
 
 pub const days = [
@@ -17,5 +18,6 @@ pub const days = [
   #(06, #(day06.part1, day06.part2, "inputs/2022/day06.txt")),
   #(07, #(day07.part1, day07.part2, "inputs/2022/day07.txt")),
   #(08, #(day08.part1, day08.part2, "inputs/2022/day08.txt")),
+  #(09, #(day09.part1, day09.part2, "inputs/2022/day09.txt")),
   #(10, #(day10.part1, day10.part2, "inputs/2022/day10.txt")),
 ]

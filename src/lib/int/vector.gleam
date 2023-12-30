@@ -16,6 +16,10 @@ pub fn add2(a: V2, b: V2) -> V2 {
   V2(a.x + b.x, a.y + b.y)
 }
 
+pub fn subtract2(a: V2, b: V2) -> V2 {
+  add2(a, invert2(b))
+}
+
 pub fn add3(a: V3, b: V3) -> V3 {
   V3(a.x + b.x, a.y + b.y, a.z + b.z)
 }
