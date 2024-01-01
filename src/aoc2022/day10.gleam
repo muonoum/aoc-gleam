@@ -6,6 +6,7 @@ import gleam/iterator.{type Iterator}
 import gleam/list
 import gleam/option
 import gleam/set.{type Set}
+import lib
 import lib/int/vector.{type V2, V2}
 import lib/read
 
@@ -28,28 +29,67 @@ pub type Instruction {
 
 pub fn part1(input: String) -> Int {
   let machine = load(input)
-  use signal, machine <- iterator.fold_until(machine, 0)
-  use <- bool.guard(machine.program == [], list.Stop(signal))
-  use <- bool.guard(machine.cycle % 40 != 20, list.Continue(signal))
+  use signal, machine <- iterator.fold_until(start(machine), 0)
+  use <- lib.branch(done(machine), list.Stop(signal), list.Continue)
+  use <- bool.guard(machine.cycle % 40 != 20, signal)
   let assert Ok(x) = dict.get(machine.registers, X)
-  list.Continue(signal + machine.cycle * x)
+  signal + machine.cycle * x
 }
 
 pub fn part2(input: String) -> Int {
   render({
     let machine = load(input)
-    use display, machine <- iterator.fold_until(machine, set.new())
-    use <- bool.guard(machine.program == [], list.Stop(display))
-
-    list.Continue({
-      let assert Ok(sprite) = dict.get(machine.registers, X)
-      let pixel = V2(machine.cycle % 40 - 1, { machine.cycle - 1 } / 40)
-      use <- bool.guard(pixel.x < sprite - 1 || pixel.x > sprite + 1, display)
-      set.insert(display, pixel)
-    })
+    use display, machine <- iterator.fold_until(start(machine), set.new())
+    use <- lib.branch(done(machine), list.Stop(display), list.Continue)
+    let assert Ok(sprite) = dict.get(machine.registers, X)
+    let pixel = V2(machine.cycle % 40 - 1, { machine.cycle - 1 } / 40)
+    use <- bool.guard(pixel.x < sprite - 1 || pixel.x > sprite + 1, display)
+    set.insert(display, pixel)
   })
 
   -1
+}
+
+fn load(source: String) -> Machine {
+  let program = parse(source)
+  let registers = dict.from_list([#(X, 1)])
+  Machine(1, program, registers)
+}
+
+fn done(machine: Machine) -> Bool {
+  machine.program == []
+}
+
+fn start(machine: Machine) -> Iterator(Machine) {
+  use machine <- iterator.iterate(machine)
+
+  case machine.program {
+    [] -> machine
+
+    [#(instruction, 1), ..program] -> {
+      let registers = update(machine.registers, instruction)
+      Machine(machine.cycle + 1, program, registers)
+    }
+
+    [#(instruction, cycles), ..program] -> {
+      let program = [#(instruction, cycles - 1), ..program]
+      Machine(machine.cycle + 1, program, machine.registers)
+    }
+  }
+}
+
+fn update(
+  registers: Dict(Register, Int),
+  instruction: Instruction,
+) -> Dict(Register, Int) {
+  case instruction {
+    Noop -> registers
+    Add(register, number) -> {
+      use content <- dict.update(registers, register)
+      option.map(content, int.add(_, number))
+      |> option.unwrap(number)
+    }
+  }
 }
 
 fn render(display: Set(V2)) {
@@ -63,40 +103,6 @@ fn render_row(y: Int, display: Set(V2)) {
   case set.contains(display, V2(x, y)) {
     True -> io.print("\u{2593}")
     False -> io.print(" ")
-  }
-}
-
-fn load(source: String) -> Iterator(Machine) {
-  let program = parse(source)
-  let registers = dict.from_list([#(X, 1)])
-  let machine = Machine(1, program, registers)
-
-  use machine <- iterator.iterate(machine)
-  let machine = Machine(..machine, cycle: machine.cycle + 1)
-  case machine.program {
-    [] -> machine
-
-    [#(instruction, 1), ..program] -> {
-      let registers = update(machine, instruction)
-      Machine(..machine, program: program, registers: registers)
-    }
-
-    [#(instruction, cycles), ..program] -> {
-      let program = [#(instruction, cycles - 1), ..program]
-      Machine(..machine, program: program)
-    }
-  }
-}
-
-fn update(machine: Machine, instruction: Instruction) -> Dict(Register, Int) {
-  case instruction {
-    Noop -> machine.registers
-
-    Add(register, number) -> {
-      use content <- dict.update(machine.registers, register)
-      option.map(content, int.add(_, number))
-      |> option.unwrap(number)
-    }
   }
 }
 

@@ -1,6 +1,13 @@
 import gleam/list
 import gleam/string
 
+pub fn branch(cond: Bool, this: a, or: fn(b) -> a, that: fn() -> b) {
+  case cond {
+    True -> this
+    False -> or(that())
+  }
+}
+
 pub fn non_zero(integer: Int) -> Bool {
   integer != 0
 }
