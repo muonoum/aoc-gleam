@@ -1,7 +1,9 @@
+import gleam/bool
 import gleam/dict.{type Dict}
 import gleam/int
 import gleam/list
 import gleam/result
+import gleam/string
 import lib/read
 
 pub fn part1(input: String) -> Int {
@@ -17,41 +19,53 @@ pub fn part1(input: String) -> Int {
   result
 }
 
-pub fn part2(_input: String) -> Int {
-  -1
+pub fn part2(input: String) -> Int {
+  let program = parse(input)
+  let range = list.range(0, 99)
+  let target = 19_690_720
+
+  let execute = fn(one, two) {
+    program
+    |> dict.insert(1, one)
+    |> dict.insert(2, two)
+    |> run(0)
+    |> dict.get(0)
+  }
+
+  let find = fn(over, from, fun) {
+    use last, try <- list.fold_until(over, from)
+    let assert Ok(result) = fun(try)
+    use <- bool.guard(result < target, list.Continue(try))
+    use <- bool.guard(result == target, list.Stop(try))
+    list.Stop(last)
+  }
+
+  let verb = find(range, 0, execute(_, 0))
+  let noun = find(range, verb, execute(verb, _))
+  100 * verb + noun
 }
 
 fn run(program: Dict(Int, Int), pointer: Int) {
-  case dict.get(program, pointer) {
-    Ok(1) -> {
-      let #(a, b, output) = lookup(program, pointer)
-      dict.insert(program, output, a + b)
-      |> run(pointer + 4)
-    }
-
-    Ok(2) -> {
-      let #(a, b, output) = lookup(program, pointer)
-      dict.insert(program, output, a * b)
-      |> run(pointer + 4)
-    }
-
-    Ok(99) -> program
-
-    _else -> panic
-  }
+  let assert Ok(opcode) = dict.get(program, pointer)
+  use <- bool.lazy_guard(opcode == 99, fn() { program })
+  use <- bool.lazy_guard(opcode == 1, fn() { map(program, pointer, int.add) })
+  use <- bool.lazy_guard(opcode == 2, fn() {
+    map(program, pointer, int.multiply)
+  })
+  panic as string.inspect(opcode)
 }
 
-fn lookup(program, pointer) {
+fn map(program, pointer, fun) {
   let assert Ok(a) =
     dict.get(program, pointer + 1)
     |> result.try(dict.get(program, _))
-
   let assert Ok(b) =
     dict.get(program, pointer + 2)
     |> result.try(dict.get(program, _))
 
   let assert Ok(output) = dict.get(program, pointer + 3)
-  #(a, b, output)
+  dict.insert(program, output, fun(a, b))
+  |> run(pointer + 4)
 }
 
 pub fn parse(input: String) {

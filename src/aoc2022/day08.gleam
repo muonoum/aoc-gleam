@@ -10,46 +10,39 @@ import lib/read
 
 pub fn part1(input: String) -> Int {
   let rows = parse(input)
-  let row_left_right = visibility1(rows)
-  let row_right_left = visibility1(list.map(rows, list.reverse))
+  let row_left = from_outside(rows)
+  let row_right = from_outside(list.map(rows, list.reverse))
 
   let columns = list.transpose(rows)
-  let column_top_down = visibility1(columns)
-  let column_bottom_up = visibility1(list.map(columns, list.reverse))
+  let column_top = from_outside(columns)
+  let column_bottom = from_outside(list.map(columns, list.reverse))
 
-  let trees =
-    list.flatten([
-      column_top_down,
-      column_bottom_up,
-      row_left_right,
-      row_right_left,
-    ])
-
-  list.fold(trees, set.new(), set.union)
+  list.flatten([column_top, column_bottom, row_left, row_right])
+  |> list.fold(set.new(), set.union)
   |> set.size
 }
 
 pub fn part2(input: String) -> Int {
   let rows = parse(input)
-  let row_left = list.map(rows, visibility2)
+  let row_left = list.map(rows, from_inside)
   let row_right =
     list.map(rows, list.reverse)
-    |> list.map(visibility2)
+    |> list.map(from_inside)
     |> list.map(list.reverse)
 
   let columns = list.transpose(rows)
   let column_top =
-    list.map(columns, visibility2)
+    list.map(columns, from_inside)
     |> list.transpose
   let column_bottom =
     list.map(columns, list.reverse)
-    |> list.map(visibility2)
+    |> list.map(from_inside)
     |> list.map(list.reverse)
     |> list.transpose
 
-  let rows = scenic_score(row_left, row_right)
-  let columns = scenic_score(column_top, column_bottom)
-  let all = scenic_score(rows, columns)
+  let rows = score(row_left, row_right)
+  let columns = score(column_top, column_bottom)
+  let all = score(rows, columns)
   let assert Ok(max) =
     list.flatten(all)
     |> list.reduce(int.max)
@@ -57,7 +50,7 @@ pub fn part2(input: String) -> Int {
   max
 }
 
-fn visibility1(slice) {
+fn from_outside(slice) {
   use trees <- list.map(slice)
   use <- lib.return(pair.second)
   use #(max, seen), #(position, height) <- list.fold(trees, #(-1, set.new()))
@@ -65,7 +58,7 @@ fn visibility1(slice) {
   #(height, set.insert(seen, position))
 }
 
-fn visibility2(slice) {
+fn from_inside(slice) {
   use _, index <- list.index_map(slice)
   let assert #(neighbors, [#(_, height), ..]) = list.split(slice, index)
   case list.reverse(neighbors) {
@@ -78,7 +71,7 @@ fn visibility2(slice) {
   }
 }
 
-fn scenic_score(a, b) {
+fn score(a, b) {
   use #(a, b) <- list.map(list.zip(a, b))
   use #(a, b) <- list.map(list.zip(a, b))
   a * b

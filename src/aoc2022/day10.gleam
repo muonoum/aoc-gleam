@@ -30,7 +30,8 @@ pub type Instruction {
 pub fn part1(input: String) -> Int {
   let machine = load(input)
   use signal, machine <- iterator.fold_until(start(machine), 0)
-  use <- lib.branch(done(machine), list.Stop(signal), list.Continue)
+  use <- bool.guard(done(machine), list.Stop(signal))
+  use <- lib.return(list.Continue)
   use <- bool.guard(machine.cycle % 40 != 20, signal)
   let assert Ok(x) = dict.get(machine.registers, X)
   signal + machine.cycle * x
@@ -40,7 +41,8 @@ pub fn part2(input: String) -> Int {
   render({
     let machine = load(input)
     use display, machine <- iterator.fold_until(start(machine), set.new())
-    use <- lib.branch(done(machine), list.Stop(display), list.Continue)
+    use <- bool.guard(done(machine), list.Stop(display))
+    use <- lib.return(list.Continue)
     let assert Ok(sprite) = dict.get(machine.registers, X)
     let pixel = V2(machine.cycle % 40 - 1, { machine.cycle - 1 } / 40)
     use <- bool.guard(pixel.x < sprite - 1 || pixel.x > sprite + 1, display)
