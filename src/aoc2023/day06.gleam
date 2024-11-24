@@ -43,15 +43,11 @@ pub fn part2(input: String) -> Int {
 fn parse(input) {
   let lines = read.lines(input)
 
-  let assert #(times, records) = {
-    use #(times, records), line <- list.fold(lines, #([], []))
+  use #(times, records), line <- list.fold(lines, #([], []))
 
-    case line {
-      "Time:" <> v -> #(read.fields(v, " "), records)
-      "Distance:" <> v -> #(times, read.fields(v, " "))
-      _ -> #(times, records)
-    }
+  case line {
+    "Time:" <> v -> #(read.fields(v, " "), records)
+    "Distance:" <> v -> #(times, read.fields(v, " "))
+    _ -> #(times, records)
   }
-
-  #(times, records)
 }

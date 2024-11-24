@@ -1,5 +1,17 @@
+import gleam/dict
+import gleam/function
 import gleam/list
 import gleam/string
+
+pub fn clusters(v) {
+  list.group(v, function.identity)
+  |> dict.values()
+  |> list.map(list.length)
+}
+
+pub fn gt(v, n) {
+  v > n
+}
 
 pub fn non_zero(integer: Int) -> Bool {
   integer != 0

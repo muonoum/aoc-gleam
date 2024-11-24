@@ -127,10 +127,10 @@ fn area(row, column, length) -> Set(Position) {
   set.from_list({
     list.flatten([
       list.range(column - 1, column + length)
-      |> list.map(pair.new(_, row - 1)),
+        |> list.map(pair.new(_, row - 1)),
       [#(column - 1, row), #(column + length, row)],
       list.range(column - 1, column + length)
-      |> list.map(pair.new(_, row + 1)),
+        |> list.map(pair.new(_, row + 1)),
     ])
   })
 }

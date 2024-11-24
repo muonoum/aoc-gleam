@@ -1,6 +1,5 @@
 import gleam/bool
 import gleam/dict.{type Dict}
-import gleam/int
 import gleam/iterator
 import gleam/list
 import gleam/result
@@ -32,16 +31,9 @@ pub fn part1(input: String) -> Int {
 pub fn part2(input: String) -> Int {
   let diagram = parse(input)
   let path = get_path(diagram)
-  area(path) - { list.length(path) / 2 } + 1
-}
-
-fn area(points: List(V2)) -> Int {
-  let area =
-    int.sum({
-      use #(current, next) <- list.map(list.window_by_2(points))
-      current.x * next.y - current.y * next.x
-    })
-  int.absolute_value(area) / 2
+  let perimeter = list.length(path) / 2
+  let area = vector.area(path)
+  area - perimeter + 1
 }
 
 fn get_path(diagram: List(#(V2, Tile))) -> List(V2) {

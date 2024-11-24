@@ -20,15 +20,9 @@ import simplifile
 fn time(fun: fn() -> a) -> #(Int, a)
 
 const years = [
-  #(15, aoc2015.days),
-  #(16, aoc2016.days),
-  #(17, aoc2017.days),
-  #(18, aoc2018.days),
-  #(19, aoc2019.days),
-  #(20, aoc2020.days),
-  #(21, aoc2021.days),
-  #(22, aoc2022.days),
-  #(23, aoc2023.days),
+  #(15, aoc2015.days), #(16, aoc2016.days), #(17, aoc2017.days),
+  #(18, aoc2018.days), #(19, aoc2019.days), #(20, aoc2020.days),
+  #(21, aoc2021.days), #(22, aoc2022.days), #(23, aoc2023.days),
 ]
 
 pub fn main() {

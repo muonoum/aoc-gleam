@@ -1,7 +1,6 @@
 import gleam/int
 import gleam/list
 import gleam/string
-import lib
 import lib/int/vector.{type V2, V2}
 import lib/read
 
@@ -35,16 +34,9 @@ pub fn part2(input: String) -> Int {
 
 fn run(plan: Plan) -> Int {
   let Trench(points, perimeter) = dig(plan)
-  let assert Ok(area) = area(points)
-  let assert Ok(perimeter) = int.divide(perimeter, 2)
+  let area = vector.area(points)
+  let perimeter = perimeter / 2
   area + perimeter + 1
-}
-
-fn area(points: List(V2)) -> Result(Int, Nil) {
-  use <- lib.return(int.divide(_, 2))
-  use <- lib.return(int.sum)
-  use #(current, next) <- list.map(list.window_by_2(points))
-  current.x * next.y - current.y * next.x
 }
 
 fn dig(plan: Plan) -> Trench {

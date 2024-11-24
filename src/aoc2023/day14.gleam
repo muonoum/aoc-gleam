@@ -24,7 +24,7 @@ pub fn part1(input: String) -> Int {
   int.sum({
     parse(input)
     |> tilt_north
-    |> calculate_load
+    |> load
   })
 }
 
@@ -35,7 +35,7 @@ pub fn part2(input: String) -> Int {
   let loop = {
     use seen, #(dish, index) <- iterator.transform(
       iterator.iterate(dish, cycle)
-      |> iterator.index,
+        |> iterator.index,
       dict.new(),
     )
 
@@ -59,7 +59,7 @@ pub fn part2(input: String) -> Int {
   let next = { cycles / loop } * loop
 
   int.sum(
-    calculate_load({
+    load({
       use dish, _ <- list.fold(list.range(next, cycles), dish)
       cycle(dish)
     }),
@@ -74,7 +74,7 @@ fn cycle(dish: Dish) -> Dish {
   |> tilt_east
 }
 
-fn calculate_load(dish: Dish) {
+fn load(dish: Dish) {
   let Dish(rocks, limit) = dish
   use #(position, rock) <- list.map(rocks)
   use <- bool.guard(rock == Cubed, 0)

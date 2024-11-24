@@ -1,4 +1,5 @@
 import gleam/dict.{type Dict}
+import gleam/int.{absolute_value as abs}
 import gleam/list
 import gleam/result
 
@@ -41,4 +42,14 @@ pub fn neighbors(position: V2, grid: Dict(V2, a)) {
   let position = add2(position, direction)
   use neighbor <- result.try(dict.get(grid, position))
   Ok(#(position, neighbor))
+}
+
+pub fn area(points: List(V2)) -> Int {
+  let base =
+    int.sum({
+      use #(current, next) <- list.map(list.window_by_2(points))
+      current.x * next.y - current.y * next.x
+    })
+
+  abs(base) / 2
 }

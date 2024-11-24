@@ -1,5 +1,5 @@
-import gleam/string
 import gleam/list
+import gleam/string
 
 pub fn part1(input: String) {
   use floor, grapheme <- list.fold(string.to_graphemes(input), 0)
