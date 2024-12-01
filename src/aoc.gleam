@@ -7,6 +7,7 @@ import aoc2020
 import aoc2021
 import aoc2022
 import aoc2023
+import aoc2024
 import gleam/dict
 import gleam/erlang
 import gleam/int
@@ -23,6 +24,7 @@ const years = [
   #(15, aoc2015.days), #(16, aoc2016.days), #(17, aoc2017.days),
   #(18, aoc2018.days), #(19, aoc2019.days), #(20, aoc2020.days),
   #(21, aoc2021.days), #(22, aoc2022.days), #(23, aoc2023.days),
+  #(24, aoc2024.days),
 ]
 
 pub fn main() {
