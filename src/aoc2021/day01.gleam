@@ -8,6 +8,7 @@ pub fn part1(input: String) -> Int {
       parse(input)
       |> list.window_by_2,
     )
+
     b > a
   })
 }
@@ -19,7 +20,8 @@ pub fn part2(input: String) -> Int {
       |> list.window(3)
       |> list.window_by_2,
     )
-    let assert #(a, b) = window
+
+    let #(a, b) = window
     int.sum(b) > int.sum(a)
   })
 }

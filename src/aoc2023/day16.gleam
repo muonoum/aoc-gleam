@@ -80,10 +80,10 @@ fn count_energy(energy: Set(Light)) -> Int {
 }
 
 fn add_vectors(a: V2, b: V2, limit: V2) -> Result(V2, Nil) {
-  case V2(a.x + b.x, a.y + b.y) {
-    V2(x, _) if x < 0 || x > limit.x -> Error(Nil)
-    V2(_, y) if y < 0 || y > limit.y -> Error(Nil)
-    position -> Ok(position)
+  case a.x + b.x, a.y + b.y {
+    x, _ if x < 0 || x > limit.x -> Error(Nil)
+    _, y if y < 0 || y > limit.y -> Error(Nil)
+    x, y -> Ok(V2(x, y))
   }
 }
 
