@@ -2,7 +2,7 @@ import gleam/bool
 import gleam/int
 import gleam/list
 import gleam/result
-import lib/float/vector.{type V2, V2}
+import lib/float/v2.{type V2, V2}
 import lib/read
 
 pub fn part1(input: String) -> Int {

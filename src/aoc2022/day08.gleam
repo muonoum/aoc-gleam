@@ -5,7 +5,7 @@ import gleam/pair
 import gleam/set
 import gleam/string
 import lib
-import lib/int/vector.{V2}
+import lib/int/v2.{V2}
 import lib/read
 
 pub fn part1(input: String) -> Int {

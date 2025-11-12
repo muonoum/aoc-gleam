@@ -2,7 +2,7 @@ import gleam/int
 import gleam/list
 import gleam/string
 import lib
-import lib/int/vector.{type V2, V2}
+import lib/int/v2.{type V2, V2}
 import lib/read
 
 pub type Direction {
@@ -35,7 +35,7 @@ pub fn part2(input: String) -> Int {
 
 fn run(plan: Plan) -> Int {
   let Trench(points, perimeter) = dig(plan)
-  let area = vector.area(points)
+  let area = v2.area(points)
   let perimeter = perimeter / 2
   area + perimeter + 1
 }

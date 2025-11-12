@@ -9,27 +9,19 @@ pub type V2 {
   V2(x: Int, y: Int)
 }
 
-pub type V3 {
-  V3(x: Int, y: Int, z: Int)
-}
-
-pub fn add2(a: V2, b: V2) -> V2 {
+pub fn add(a: V2, b: V2) -> V2 {
   V2(a.x + b.x, a.y + b.y)
 }
 
-pub fn subtract2(a: V2, b: V2) -> V2 {
-  add2(a, invert2(b))
+pub fn subtract(a: V2, b: V2) -> V2 {
+  add(a, invert(b))
 }
 
-pub fn add3(a: V3, b: V3) -> V3 {
-  V3(a.x + b.x, a.y + b.y, a.z + b.z)
-}
-
-pub fn invert2(v: V2) -> V2 {
+pub fn invert(v: V2) -> V2 {
   V2(-v.x, -v.y)
 }
 
-pub fn grid(rows: List(List(String))) {
+pub fn grid(rows: List(List(String))) -> List(#(V2, String)) {
   list.flatten({
     use row, y <- list.index_map(rows)
     use element, x <- list.index_map(row)
@@ -37,9 +29,9 @@ pub fn grid(rows: List(List(String))) {
   })
 }
 
-pub fn neighbors(position: V2, grid: Dict(V2, a)) {
+pub fn neighbors(position: V2, grid: Dict(V2, a)) -> List(#(V2, a)) {
   use direction <- list.filter_map(directions)
-  let position = add2(position, direction)
+  let position = add(position, direction)
   use neighbor <- result.try(dict.get(grid, position))
   Ok(#(position, neighbor))
 }

@@ -7,7 +7,7 @@ import gleam/option
 import gleam/set.{type Set}
 import gleam/yielder.{type Yielder}
 import lib
-import lib/int/vector.{type V2, V2}
+import lib/int/v2.{type V2, V2}
 import lib/read
 
 pub type Machine {

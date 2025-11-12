@@ -5,7 +5,7 @@ import gleam/list
 import gleam/pair
 import gleam/string
 import gleam/yielder
-import lib/int/vector.{type V2, V2}
+import lib/int/v2.{type V2, V2}
 import lib/read
 
 pub type Dish {

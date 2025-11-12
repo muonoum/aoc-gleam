@@ -4,7 +4,7 @@ import gleam/list
 import gleam/pair
 import gleam/set
 import lib
-import lib/int/vector.{type V2, V2}
+import lib/int/v2.{type V2, V2}
 import lib/read
 
 pub fn part1(input: String) -> Int {
@@ -59,7 +59,7 @@ fn trace(wires: List(List(#(V2, Int)))) {
   use path, _ <- list.fold(list.range(1, count), path)
   case path {
     [] -> [#(move, 1)]
-    [#(last, count), ..] -> [#(vector.add2(last, move), count + 1), ..path]
+    [#(last, count), ..] -> [#(v2.add(last, move), count + 1), ..path]
   }
 }
 

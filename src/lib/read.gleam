@@ -2,7 +2,7 @@ import gleam/int
 import gleam/list
 import gleam/string
 import lib
-import lib/int/vector.{type V2, V2}
+import lib/int/v2.{type V2, V2}
 
 pub fn lines(input: String) -> List(String) {
   use line <- list.map({

@@ -12,28 +12,19 @@ pub type V2 {
   V2(x: Float, y: Float)
 }
 
-pub type V3 {
-  V3(x: Float, y: Float, z: Float)
-}
-
-pub fn add2(a: V2, b: V2) -> V2 {
+pub fn add(a: V2, b: V2) -> V2 {
   V2(a.x +. b.x, a.y +. b.y)
 }
 
-pub fn add3(a: V3, b: V3) -> V3 {
-  V3(a.x +. b.x, a.y +. b.y, a.z +. b.z)
-}
-
-pub fn invert2(v: V2) -> V2 {
+pub fn invert(v: V2) -> V2 {
   V2(v.x *. -1.0, v.y *. -1.0)
 }
 
-pub fn normalize(v: V2) {
+pub fn normalize(v: V2) -> Result(V2, Nil) {
   use length <- result.try(
     maths.nth_root(v.x *. v.x +. v.y *. v.y, 2)
     |> result.replace_error(Nil),
   )
 
-  V2(v.x /. length, v.y /. length)
-  |> Ok
+  Ok(V2(v.x /. length, v.y /. length))
 }

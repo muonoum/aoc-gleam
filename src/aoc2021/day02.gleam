@@ -3,7 +3,7 @@ import gleam/list
 import gleam/pair
 import gleam/result
 import lib
-import lib/int/vector.{V2}
+import lib/int/v2.{V2}
 import lib/read
 
 pub type Movement {

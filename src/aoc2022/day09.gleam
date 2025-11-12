@@ -4,7 +4,7 @@ import gleam/list
 import gleam/pair
 import gleam/set
 import gleam_community/maths.{int_sign as sign}
-import lib/int/vector.{type V2, V2}
+import lib/int/v2.{type V2, V2}
 import lib/read
 
 pub fn part1(input: String) -> Int {
@@ -25,9 +25,9 @@ fn solve(input: String, count: Int) -> Int {
       let assert [tail, ..] as knots = {
         use knots, knot <- list.fold(knots, [])
         case knots {
-          [] -> [vector.add2(knot, direction)]
+          [] -> [v2.add(knot, direction)]
           [leader, ..] -> {
-            [vector.add2(knot, move(knot, leader)), ..knots]
+            [v2.add(knot, move(knot, leader)), ..knots]
           }
         }
       }
@@ -43,7 +43,7 @@ fn create(count: Int) -> List(V2) {
 }
 
 fn move(follower: V2, leader: V2) -> V2 {
-  let V2(dx, dy) = vector.subtract2(leader, follower)
+  let V2(dx, dy) = v2.subtract(leader, follower)
   use <- bool.guard(abs(dx) <= 1 && abs(dy) <= 1, V2(0, 0))
   V2(sign(dx), sign(dy))
 }

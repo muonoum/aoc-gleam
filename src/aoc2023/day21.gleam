@@ -2,7 +2,7 @@ import gleam/bool
 import gleam/dict
 import gleam/list
 import gleam/set
-import lib/int/vector.{type V2}
+import lib/int/v2.{type V2}
 import lib/read
 
 pub type Tile {
@@ -34,7 +34,7 @@ fn walk(grid, steps) {
   let next =
     set.from_list({
       use position <- list.flat_map(positions)
-      use #(neighbor, tile) <- list.filter_map(vector.neighbors(position, grid))
+      use #(neighbor, tile) <- list.filter_map(v2.neighbors(position, grid))
       use <- bool.guard(tile == Rock, Error(Nil))
       Ok(neighbor)
     })

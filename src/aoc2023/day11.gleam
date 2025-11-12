@@ -3,7 +3,7 @@ import gleam/int
 import gleam/list
 import gleam/pair
 import gleam/string
-import lib/int/vector.{type V2}
+import lib/int/v2.{type V2}
 import lib/read
 
 pub type State {
@@ -63,7 +63,7 @@ fn parse(input: String) -> State {
   }
 
   let grid = {
-    use #(position, node) <- list.filter_map(vector.grid(graphemes))
+    use #(position, node) <- list.filter_map(v2.grid(graphemes))
     use <- bool.guard(node != "#", Error(Nil))
     Ok(position)
   }

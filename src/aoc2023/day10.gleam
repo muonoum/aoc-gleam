@@ -4,7 +4,7 @@ import gleam/list
 import gleam/result
 import gleam/set
 import gleam/yielder
-import lib/int/vector.{type V2, V2}
+import lib/int/v2.{type V2, V2}
 import lib/read
 
 pub type Tile {
@@ -32,7 +32,7 @@ pub fn part2(input: String) -> Int {
   let diagram = parse(input)
   let path = get_path(diagram)
   let perimeter = list.length(path) / 2
-  let area = vector.area(path)
+  let area = v2.area(path)
   area - perimeter + 1
 }
 
@@ -54,10 +54,10 @@ fn get_path(diagram: List(#(V2, Tile))) -> List(V2) {
 
   let assert Ok([start_pipe]) = {
     let candidates = {
-      use direction <- list.filter_map(vector.directions)
-      let position = vector.add2(start_position, direction)
+      use direction <- list.filter_map(v2.directions)
+      let position = v2.add(start_position, direction)
       use neighbor <- result.try(dict.get(pipes, position))
-      let direction = vector.invert2(direction)
+      let direction = v2.invert(direction)
       use pipes <- result.try(connections(into: neighbor, from: direction))
       Ok(set.from_list(pipes))
     }
@@ -87,8 +87,8 @@ fn get_path(diagram: List(#(V2, Tile))) -> List(V2) {
 }
 
 fn get_neighbors(pipe: Pipe, position: V2, pipes: Dict(V2, Pipe)) {
-  use direction <- list.filter_map(vector.directions)
-  let position = vector.add2(position, direction)
+  use direction <- list.filter_map(v2.directions)
+  let position = v2.add(position, direction)
   use neighbor <- result.try(dict.get(pipes, position))
   use candidates <- result.try({
     use pipes <- result.map(connections(into: pipe, from: direction))
