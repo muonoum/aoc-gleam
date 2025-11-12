@@ -1,7 +1,6 @@
 import gleam/bool
 import gleam/dict
 import gleam/int
-import gleam/io
 import gleam/list
 import gleam/string
 import lib
@@ -27,7 +26,7 @@ pub fn part1(input: String) -> Int {
 
   list.filter_map(dict.values(stacks), list.first)
   |> string.join("")
-  |> io.debug
+  |> echo
 
   -1
 }
@@ -47,7 +46,7 @@ pub fn part2(input: String) -> Int {
 
   list.filter_map(dict.values(stacks), list.first)
   |> string.join("")
-  |> io.debug
+  |> echo
 
   -1
 }

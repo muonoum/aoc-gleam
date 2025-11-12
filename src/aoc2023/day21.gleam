@@ -2,7 +2,7 @@ import gleam/bool
 import gleam/dict
 import gleam/list
 import gleam/set
-import lib/int/vector.{type V2, V2}
+import lib/int/vector.{type V2}
 import lib/read
 
 pub type Tile {

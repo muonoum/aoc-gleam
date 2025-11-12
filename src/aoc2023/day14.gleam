@@ -1,10 +1,10 @@
 import gleam/bool
 import gleam/dict
 import gleam/int
-import gleam/iterator
 import gleam/list
 import gleam/pair
 import gleam/string
+import gleam/yielder
 import lib/int/vector.{type V2, V2}
 import lib/read
 
@@ -33,28 +33,28 @@ pub fn part2(input: String) -> Int {
 
   let cycles = 1_000_000_000
   let loop = {
-    use seen, #(dish, index) <- iterator.transform(
-      iterator.iterate(dish, cycle)
-        |> iterator.index,
+    use seen, #(dish, index) <- yielder.transform(
+      yielder.iterate(dish, cycle)
+        |> yielder.index,
       dict.new(),
     )
 
     case dict.get(seen, dish.rocks) {
       Error(Nil) -> {
         let seen = dict.insert(seen, dish.rocks, index + 1)
-        iterator.Next(#(dish, seen), seen)
+        yielder.Next(#(dish, seen), seen)
       }
 
       Ok(previous) -> {
         case { cycles - index } % { previous - index } {
-          0 -> iterator.Done
-          _ -> iterator.Next(#(dish, seen), seen)
+          0 -> yielder.Done
+          _ -> yielder.Next(#(dish, seen), seen)
         }
       }
     }
   }
 
-  let assert Ok(#(dish, seen)) = iterator.last(loop)
+  let assert Ok(#(dish, seen)) = yielder.last(loop)
   let assert Ok(loop) = dict.get(seen, dish.rocks)
   let next = { cycles / loop } * loop
 

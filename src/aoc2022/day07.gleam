@@ -69,7 +69,7 @@ fn scan(input: String) -> Dict(List(String), Int) {
         let key =
           list.drop(dirs, n)
           |> list.reverse
-        use existing <- dict.update(sizes, key)
+        use existing <- dict.upsert(sizes, key)
         option.map(existing, int.add(_, size))
         |> option.unwrap(size)
       }

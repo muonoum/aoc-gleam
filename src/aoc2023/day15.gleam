@@ -25,7 +25,7 @@ pub fn part2(input: String) -> Int {
 
     case op {
       Add(label, hash, length) -> {
-        use box <- dict.update(boxes, hash)
+        use box <- dict.upsert(boxes, hash)
         case box {
           option.None -> [#(label, length)]
           option.Some(box) -> list.key_set(box, label, length)
@@ -33,7 +33,7 @@ pub fn part2(input: String) -> Int {
       }
 
       Remove(label, hash) -> {
-        use box <- dict.update(boxes, hash)
+        use box <- dict.upsert(boxes, hash)
         case box {
           option.None -> []
           option.Some(box) ->

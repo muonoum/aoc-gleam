@@ -1,10 +1,10 @@
 import gleam/bool
 import gleam/dict.{type Dict}
-import gleam/iterator.{type Iterator}
 import gleam/list
 import gleam/pair
 import gleam/string
-import gleam_community/maths/arithmetics
+import gleam/yielder.{type Yielder}
+import gleam_community/maths
 import lib
 import lib/read
 
@@ -21,7 +21,7 @@ pub fn part1(input: String) -> Int {
 
   pair.first({
     let start = #(0, "AAA")
-    use #(count, node), direction <- iterator.fold_until(directions, start)
+    use #(count, node), direction <- yielder.fold_until(directions, start)
     case direction, dict.get(network, node) {
       Left, Ok(#("ZZZ", _)) -> list.Stop(#(count + 1, node))
       Right, Ok(#(_, "ZZZ")) -> list.Stop(#(count + 1, node))
@@ -43,7 +43,7 @@ pub fn part2(input: String) -> Int {
 
     pair.first({
       let start = #(0, node)
-      use #(count, node), direction <- iterator.fold_until(directions, start)
+      use #(count, node), direction <- yielder.fold_until(directions, start)
       let next = {
         case direction, dict.get(network, node) {
           Left, Ok(#(node, _)) -> node
@@ -59,17 +59,17 @@ pub fn part2(input: String) -> Int {
     })
   }
 
-  list.fold(rest, first, arithmetics.lcm)
+  list.fold(rest, first, maths.lcm)
 }
 
-fn parse(input: String) -> #(Iterator(Direction), Network) {
+fn parse(input: String) -> #(Yielder(Direction), Network) {
   let lines = read.lines(input)
   let assert [directions, ..lines] = lines
   let directions =
     string.split(directions, "")
     |> list.map(parse_direction)
-    |> iterator.from_list()
-    |> iterator.cycle
+    |> yielder.from_list()
+    |> yielder.cycle
 
   let network = {
     use network, line <- list.fold(lines, dict.new())

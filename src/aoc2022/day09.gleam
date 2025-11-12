@@ -3,7 +3,7 @@ import gleam/int.{absolute_value as abs}
 import gleam/list
 import gleam/pair
 import gleam/set
-import gleam_community/maths/piecewise.{int_sign as sign}
+import gleam_community/maths.{int_sign as sign}
 import lib/int/vector.{type V2, V2}
 import lib/read
 

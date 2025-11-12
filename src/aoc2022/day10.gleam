@@ -2,10 +2,10 @@ import gleam/bool
 import gleam/dict.{type Dict}
 import gleam/int
 import gleam/io
-import gleam/iterator.{type Iterator}
 import gleam/list
 import gleam/option
 import gleam/set.{type Set}
+import gleam/yielder.{type Yielder}
 import lib
 import lib/int/vector.{type V2, V2}
 import lib/read
@@ -29,7 +29,7 @@ pub type Instruction {
 
 pub fn part1(input: String) -> Int {
   let machine = load(input)
-  use signal, machine <- iterator.fold_until(start(machine), 0)
+  use signal, machine <- yielder.fold_until(start(machine), 0)
   use <- bool.guard(done(machine), list.Stop(signal))
   use <- lib.return(list.Continue)
   use <- bool.guard(machine.cycle % 40 != 20, signal)
@@ -40,7 +40,7 @@ pub fn part1(input: String) -> Int {
 pub fn part2(input: String) -> Int {
   render({
     let machine = load(input)
-    use display, machine <- iterator.fold_until(start(machine), set.new())
+    use display, machine <- yielder.fold_until(start(machine), set.new())
     use <- bool.guard(done(machine), list.Stop(display))
     use <- lib.return(list.Continue)
     let assert Ok(sprite) = dict.get(machine.registers, X)
@@ -62,8 +62,8 @@ fn done(machine: Machine) -> Bool {
   machine.program == []
 }
 
-fn start(machine: Machine) -> Iterator(Machine) {
-  use machine <- iterator.iterate(machine)
+fn start(machine: Machine) -> Yielder(Machine) {
+  use machine <- yielder.iterate(machine)
 
   case machine.program {
     [] -> machine
@@ -87,7 +87,7 @@ fn update(
   case instruction {
     Noop -> registers
     Add(register, number) -> {
-      use content <- dict.update(registers, register)
+      use content <- dict.upsert(registers, register)
       option.map(content, int.add(_, number))
       |> option.unwrap(number)
     }

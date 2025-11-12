@@ -1,17 +1,17 @@
 import gleam/int
-import gleam/iterator
 import gleam/list
+import gleam/yielder
 import lib
 import lib/read
 
 pub fn part1(input: String) -> Int {
   int.sum({
     use history <- list.map(parse(input))
-    iterator.iterate(history, diff)
-    |> iterator.take_while(list.any(_, lib.non_zero))
-    |> iterator.map(list.reverse)
-    |> iterator.map(extrapolate(0, _))
-    |> iterator.to_list
+    yielder.iterate(history, diff)
+    |> yielder.take_while(list.any(_, lib.non_zero))
+    |> yielder.map(list.reverse)
+    |> yielder.map(extrapolate(0, _))
+    |> yielder.to_list
     |> int.sum
   })
 }
@@ -19,9 +19,9 @@ pub fn part1(input: String) -> Int {
 pub fn part2(input: String) -> Int {
   int.sum({
     use history <- list.map(parse(input))
-    iterator.iterate(history, diff)
-    |> iterator.take_while(list.any(_, lib.non_zero))
-    |> iterator.to_list
+    yielder.iterate(history, diff)
+    |> yielder.take_while(list.any(_, lib.non_zero))
+    |> yielder.to_list
     |> list.reverse()
     |> list.fold(0, extrapolate)
   })

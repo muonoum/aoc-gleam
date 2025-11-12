@@ -27,7 +27,7 @@ pub fn part2(_input: String) -> Int {
 }
 
 fn mirror(pattern: List(List(String)), multiplier: Int) -> Result(Int, Nil) {
-  use <- lib.return(result.nil_error)
+  use <- lib.return(result.replace_error(_, Nil))
   use index, #(a, b) <- list.fold_until(list.window_by_2(pattern), Error(1))
   let assert Error(index) = index
   use <- bool.guard(a != b, list.Continue(Error(index + 1)))

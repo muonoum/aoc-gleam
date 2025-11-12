@@ -1,5 +1,5 @@
 import gleam/result
-import gleam_community/maths/elementary.{square_root}
+import gleam_community/maths
 
 pub const directions = [
   V2(1.0, 0.0),
@@ -30,8 +30,8 @@ pub fn invert2(v: V2) -> V2 {
 
 pub fn normalize(v: V2) {
   use length <- result.try(
-    square_root(v.x *. v.x +. v.y *. v.y)
-    |> result.nil_error,
+    maths.nth_root(v.x *. v.x +. v.y *. v.y, 2)
+    |> result.replace_error(Nil),
   )
 
   V2(v.x /. length, v.y /. length)

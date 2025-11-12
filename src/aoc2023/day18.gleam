@@ -1,6 +1,7 @@
 import gleam/int
 import gleam/list
 import gleam/string
+import lib
 import lib/int/vector.{type V2, V2}
 import lib/read
 
@@ -72,7 +73,7 @@ fn parse_color(color: String) -> #(Direction, Int) {
   let assert [last, ..rest] = list.reverse(read.hex(color))
   let assert Ok(distance) =
     list.reverse(rest)
-    |> int.undigits(16)
+    |> lib.undigits(16)
   let direction =
     int.to_string(last)
     |> parse_direction

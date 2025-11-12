@@ -1,10 +1,10 @@
 import gleam/bool
 import gleam/dict.{type Dict}
 import gleam/int
-import gleam/iterator
 import gleam/list
 import gleam/set.{type Set}
 import gleam/string
+import gleam/yielder
 import lib/int/vector.{type V2, V2}
 import lib/read
 
@@ -59,7 +59,7 @@ pub fn part2(input: String) -> Int {
 fn energize(space: Space, start: Light) -> Int {
   let states = {
     let initial_state = State(lights: set.from_list([start]), energy: set.new())
-    use state <- iterator.iterate(from: initial_state)
+    use state <- yielder.iterate(from: initial_state)
     use State(lights, energy), light <- set.fold(state.lights, from: state)
 
     let lights = set.delete(lights, light)
@@ -67,7 +67,7 @@ fn energize(space: Space, start: Light) -> Int {
     State(move(light, space, lights), set.insert(energy, light))
   }
 
-  use _, State(lights, energy) <- iterator.fold_until(over: states, from: 0)
+  use _, State(lights, energy) <- yielder.fold_until(over: states, from: 0)
   use <- bool.guard(set.size(lights) != 0, list.Continue(0))
   list.Stop(count_energy(energy))
 }

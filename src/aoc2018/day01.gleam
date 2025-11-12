@@ -1,9 +1,9 @@
 import gleam/bool
 import gleam/int
-import gleam/iterator
 import gleam/list
 import gleam/pair
 import gleam/set
+import gleam/yielder
 import lib/read
 
 pub fn part1(input: String) -> Int {
@@ -13,11 +13,11 @@ pub fn part1(input: String) -> Int {
 pub fn part2(input: String) -> Int {
   let changes =
     parse(input)
-    |> iterator.from_list
-    |> iterator.cycle
+    |> yielder.from_list
+    |> yielder.cycle
 
   pair.first({
-    use #(freq, seen), change <- iterator.fold_until(changes, #(0, set.new()))
+    use #(freq, seen), change <- yielder.fold_until(changes, #(0, set.new()))
     let freq = freq + change
     use <- bool.guard(set.contains(seen, freq), list.Stop(#(freq, seen)))
     list.Continue(#(freq, set.insert(seen, freq)))

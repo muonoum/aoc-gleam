@@ -4,6 +4,7 @@ import gleam/int
 import gleam/list
 import gleam/result
 import gleam/string
+import lib
 import lib/read
 
 pub fn part1(input: String) -> Int {
@@ -56,7 +57,7 @@ fn play(hands: List(#(Int, Int, Int))) {
 fn hand_number(hand: List(String), number: fn(String) -> Int) -> Int {
   let assert Ok(number) =
     list.map(hand, number)
-    |> int.undigits(14)
+    |> lib.undigits(14)
   number
 }
 

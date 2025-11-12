@@ -1,9 +1,9 @@
 import gleam/bool
 import gleam/dict.{type Dict}
-import gleam/iterator
 import gleam/list
 import gleam/result
 import gleam/set
+import gleam/yielder
 import lib/int/vector.{type V2, V2}
 import lib/read
 
@@ -70,18 +70,18 @@ fn get_path(diagram: List(#(V2, Tile))) -> List(V2) {
   let assert Ok(first_position) = list.first(start_neighbors)
 
   let path = {
-    use #(position, pipes) <- iterator.unfold(#(first_position, pipes))
-    use <- bool.guard(position == start_position, iterator.Done)
+    use #(position, pipes) <- yielder.unfold(#(first_position, pipes))
+    use <- bool.guard(position == start_position, yielder.Done)
     let assert Ok(pipe) = dict.get(pipes, position)
     let pipes = dict.delete(pipes, position)
     case get_neighbors(pipe, position, pipes) {
-      [] -> iterator.Next(position, #(start_position, pipes))
-      [neighbor] -> iterator.Next(position, #(neighbor, pipes))
+      [] -> yielder.Next(position, #(start_position, pipes))
+      [neighbor] -> yielder.Next(position, #(neighbor, pipes))
       _ -> panic
     }
   }
 
-  iterator.to_list(path)
+  yielder.to_list(path)
   |> list.prepend(start_position)
   |> list.append([start_position])
 }
