@@ -85,7 +85,11 @@ fn parse(from input: String) -> Schematic {
   }
 }
 
-fn parse_grapheme(tokens: List(Token), grapheme: String, column: Int) {
+fn parse_grapheme(
+  tokens: List(Token),
+  grapheme: String,
+  column: Int,
+) -> List(Token) {
   case grapheme {
     "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ->
       append_digit(tokens, grapheme, column)
@@ -94,7 +98,7 @@ fn parse_grapheme(tokens: List(Token), grapheme: String, column: Int) {
   }
 }
 
-fn append_digit(tokens: List(Token), digit: String, column: Int) {
+fn append_digit(tokens: List(Token), digit: String, column: Int) -> List(Token) {
   case tokens {
     [Digits(digits, column), ..tokens] -> {
       [Digits(digits <> digit, column), ..tokens]

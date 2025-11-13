@@ -21,7 +21,7 @@ fn join(input: List(Int)) -> Result(Int, Nil) {
   |> result.replace_error(Nil)
 }
 
-pub fn part2(input: String) {
+pub fn part2(input: String) -> Int {
   int.sum({
     use line <- list.filter_map(string.split(input, "\n"))
     join(parse(line, []))

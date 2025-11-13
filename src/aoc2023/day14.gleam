@@ -30,8 +30,8 @@ pub fn part1(input: String) -> Int {
 
 pub fn part2(input: String) -> Int {
   let dish = parse(input)
-
   let cycles = 1_000_000_000
+
   let loop = {
     use seen, #(dish, index) <- yielder.transform(
       yielder.iterate(dish, cycle)
@@ -93,6 +93,7 @@ fn tilt_north(dish: Dish) {
 
     pair.second({
       use y, #(position, rock) <- list.map_fold(column, 0)
+
       case rock {
         Cubed -> #(position.y + 1, #(position, rock))
         Rounded -> #(y + 1, #(V2(position.x, y), rock))
@@ -115,6 +116,7 @@ fn tilt_south(dish: Dish) {
 
     pair.second({
       use y, #(position, rock) <- list.map_fold(group, limit.y)
+
       case rock {
         Cubed -> #(position.y - 1, #(position, rock))
         Rounded -> #(y - 1, #(V2(position.x, y), rock))

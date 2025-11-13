@@ -26,6 +26,7 @@ pub fn part2(input: String) -> Int {
     case op {
       Add(label, hash, length) -> {
         use box <- dict.upsert(boxes, hash)
+
         case box {
           option.None -> [#(label, length)]
           option.Some(box) -> list.key_set(box, label, length)
@@ -34,8 +35,10 @@ pub fn part2(input: String) -> Int {
 
       Remove(label, hash) -> {
         use box <- dict.upsert(boxes, hash)
+
         case box {
           option.None -> []
+
           option.Some(box) ->
             list.key_pop(box, label)
             |> result.map(pair.second)
@@ -56,7 +59,6 @@ pub fn part2(input: String) -> Int {
 
 fn hash(string: String) -> Int {
   use current, grapheme <- list.fold(string.to_graphemes(string), 0)
-
   let assert [codepoint] = string.to_utf_codepoints(grapheme)
   let code = string.utf_codepoint_to_int(codepoint)
   let assert Ok(current) = int.remainder({ current + code } * 17, 256)
@@ -80,6 +82,7 @@ fn parse_add(op: String) -> Result(Operation, Nil) {
       let assert Ok(length) = int.parse(length)
       Ok(Add(label, hash(label), length))
     }
+
     _ -> Error(Nil)
   }
 }

@@ -4,17 +4,17 @@ import gleam/int
 import gleam/list
 import gleam/string
 
-pub fn digits(x: Int, base: Int) -> Result(List(Int), Nil) {
+pub fn digits(v: Int, base: Int) -> Result(List(Int), Nil) {
   case base < 2 {
     True -> Error(Nil)
-    False -> Ok(digits_loop(x, base, []))
+    False -> Ok(digits_loop(v, base, []))
   }
 }
 
-fn digits_loop(x: Int, base: Int, acc: List(Int)) -> List(Int) {
-  case int.absolute_value(x) < base {
-    True -> [x, ..acc]
-    False -> digits_loop(x / base, base, [x % base, ..acc])
+fn digits_loop(v: Int, base: Int, acc: List(Int)) -> List(Int) {
+  case int.absolute_value(v) < base {
+    True -> [v, ..acc]
+    False -> digits_loop(v / base, base, [v % base, ..acc])
   }
 }
 
@@ -33,17 +33,17 @@ fn undigits_loop(numbers: List(Int), base: Int, acc: Int) -> Result(Int, Nil) {
   }
 }
 
-pub fn clusters(v) {
+pub fn clusters(v: List(v)) -> List(Int) {
   list.group(v, function.identity)
   |> dict.values()
   |> list.map(list.length)
 }
 
-pub fn gt(v, n) {
+pub fn greater_than(v: Int, n: Int) -> Bool {
   v > n
 }
 
-pub fn non_zero(integer: Int) -> Bool {
+pub fn non_zero_integer(integer: Int) -> Bool {
   integer != 0
 }
 
@@ -51,11 +51,11 @@ pub fn non_empty_string(string: String) -> Bool {
   string != ""
 }
 
-pub fn return(a: fn(a) -> b, body: fn() -> a) -> b {
-  a(body())
+pub fn return(wrap: fn(a) -> b, body: fn() -> a) -> b {
+  wrap(body())
 }
 
-pub fn remove(string: String, set: String) -> String {
-  use string, grapheme <- list.fold(string.to_graphemes(set), string)
+pub fn remove(string: String, remove: String) -> String {
+  use string, grapheme <- list.fold(string.to_graphemes(remove), string)
   string.replace(string, grapheme, "")
 }

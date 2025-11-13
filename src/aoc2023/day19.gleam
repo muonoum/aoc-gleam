@@ -33,6 +33,7 @@ pub fn part1(input: String) -> Int {
       use rating <- list.filter_map(ratings)
       process(rating, start, workflows)
     })
+
     dict.values(rating)
     |> int.sum
   })
@@ -92,6 +93,7 @@ pub fn parse(input: String) {
     let lines = string.split(input, "\n")
     let parser = parse_workflow
     use #(parser, tokens), line <- list.fold(lines, #(parser, []))
+
     case line {
       "" -> #(parse_rating, tokens)
       line -> #(parser, [parser(line), ..tokens])
@@ -101,6 +103,7 @@ pub fn parse(input: String) {
   let workflows =
     dict.from_list({
       use token <- list.filter_map(tokens)
+
       case token {
         Workflow(name, workflow) -> Ok(#(name, workflow))
         _else -> Error(Nil)
@@ -109,6 +112,7 @@ pub fn parse(input: String) {
 
   let ratings = {
     use token <- list.filter_map(tokens)
+
     case token {
       Rating(rating) -> Ok(rating)
       _else -> Error(Nil)
@@ -120,10 +124,12 @@ pub fn parse(input: String) {
 
 fn parse_workflow(line: String) -> Token {
   let assert [name, rules] = string.split(line, "{")
+
   let rules =
     string.replace(rules, "}", "")
     |> string.split(",")
     |> list.map(parse_rule)
+
   Workflow(name, rules)
 }
 

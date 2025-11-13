@@ -44,6 +44,7 @@ fn dig(plan: Plan) -> Trench {
   use <- reverse_points
   use state, step <- list.fold(plan, Trench([V2(0, 0)], 0))
   let #(direction, distance) = step
+
   let points =
     list.prepend(state.points, case direction, state.points {
       Right, [V2(x, y), ..] -> V2(x + distance, y)
@@ -52,6 +53,7 @@ fn dig(plan: Plan) -> Trench {
       Left, [V2(x, y), ..] -> V2(x - distance, y)
       _, _ -> panic
     })
+
   Trench(points, state.perimeter + distance)
 }
 
@@ -71,12 +73,15 @@ pub fn parse(input: String) {
 
 fn parse_color(color: String) -> #(Direction, Int) {
   let assert [last, ..rest] = list.reverse(read.hex(color))
+
   let assert Ok(distance) =
     list.reverse(rest)
     |> lib.undigits(16)
+
   let direction =
     int.to_string(last)
     |> parse_direction
+
   #(direction, distance)
 }
 

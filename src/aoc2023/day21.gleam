@@ -31,6 +31,7 @@ fn walk(grid, steps) {
   let range = list.reverse(list.range(0, steps))
   use positions, step <- list.fold(range, [start_position])
   use <- bool.guard(step == 0, positions)
+
   let next =
     set.from_list({
       use position <- list.flat_map(positions)
@@ -49,6 +50,7 @@ fn parse(input: String) {
 
 fn parse_tile(tile: #(V2, String)) -> #(V2, Tile) {
   let #(position, grapheme) = tile
+
   case grapheme {
     "#" -> #(position, Rock)
     "." -> #(position, Garden)

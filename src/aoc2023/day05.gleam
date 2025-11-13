@@ -17,6 +17,7 @@ pub type Range {
 
 pub fn part1(input: String) -> Int {
   let #(seeds, maps) = parse(input)
+
   process(maps, {
     use seed <- list.map(seeds)
     Range(seed, seed + 1)
@@ -25,6 +26,7 @@ pub fn part1(input: String) -> Int {
 
 pub fn part2(input: String) -> Int {
   let #(seeds, maps) = parse(input)
+
   process(maps, {
     use range <- list.map(list.sized_chunk(seeds, 2))
     let assert [start, length] = range
@@ -50,11 +52,13 @@ fn shift(ranges: List(Range), step: List(Map)) -> List(Range) {
 
   let #(start, ranges) = {
     use #(start, ranges), Map(map, shift) <- list.fold(step, { #(start, []) })
+
     let ranges = [
       Range(start, int.min(map.start, end)),
       Range(int.max(map.start, start) + shift, int.min(map.end, end) + shift),
       ..ranges
     ]
+
     let next = int.max(start, int.min(map.end, end))
     #(next, ranges)
   }
@@ -77,6 +81,7 @@ fn parse(input: String) -> Almanac {
       let seeds =
         string.split(seeds, " ")
         |> list.filter_map(int.parse)
+
       #(seeds, maps)
     }
 
@@ -104,6 +109,7 @@ fn parse(input: String) -> Almanac {
 
 fn sort_and_reverse(almanac: fn() -> Almanac) -> Almanac {
   use maps <- pair.map_second(almanac())
+
   list.reverse({
     use map <- list.map(maps)
     use Map(Range(a, _), _), Map(Range(b, _), _) <- list.sort(map)

@@ -33,6 +33,7 @@ fn mirror(pattern: List(List(String)), multiplier: Int) -> Result(Int, Nil) {
   use <- bool.guard(a != b, list.Continue(Error(index + 1)))
 
   let #(before, after) = list.split(pattern, index)
+
   let bad =
     list.reverse(before)
     |> list.zip(after)

@@ -55,9 +55,7 @@ fn play(hands: List(#(Int, Int, Int))) {
 }
 
 fn hand_number(hand: List(String), number: fn(String) -> Int) -> Int {
-  let assert Ok(number) =
-    list.map(hand, number)
-    |> lib.undigits(14)
+  let assert Ok(number) = list.map(hand, number) |> lib.undigits(14)
   number
 }
 
@@ -116,10 +114,12 @@ fn hand_score1(hand: List(String)) -> Int {
 
 fn hand_score2(hand: List(String)) -> Int {
   let groups = list.group(hand, function.identity)
+
   let jokers =
     dict.get(groups, "J")
     |> result.map(list.length)
     |> result.unwrap(0)
+
   let groups =
     dict.drop(groups, ["J"])
     |> dict.values

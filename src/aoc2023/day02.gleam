@@ -4,7 +4,7 @@ import gleam/result
 import gleam/string
 import lib/read
 
-pub fn part1(input: String) {
+pub fn part1(input: String) -> Int {
   int.sum({
     use #(id, all) <- list.filter_map(parse(input))
 
@@ -24,7 +24,7 @@ pub fn part1(input: String) {
   })
 }
 
-pub fn part2(input: String) {
+pub fn part2(input: String) -> Int {
   int.sum({
     use #(_id, sets) <- list.map(parse(input))
 

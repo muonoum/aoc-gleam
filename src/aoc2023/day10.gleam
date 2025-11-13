@@ -40,6 +40,7 @@ fn get_path(diagram: List(#(V2, Tile))) -> List(V2) {
   let pipes =
     dict.from_list({
       use #(position, tile) <- list.filter_map(diagram)
+
       case tile {
         Pipe(pipe) -> Ok(#(position, pipe))
         _else -> Error(Nil)
@@ -74,6 +75,7 @@ fn get_path(diagram: List(#(V2, Tile))) -> List(V2) {
     use <- bool.guard(position == start_position, yielder.Done)
     let assert Ok(pipe) = dict.get(pipes, position)
     let pipes = dict.delete(pipes, position)
+
     case get_neighbors(pipe, position, pipes) {
       [] -> yielder.Next(position, #(start_position, pipes))
       [neighbor] -> yielder.Next(position, #(neighbor, pipes))
@@ -90,11 +92,13 @@ fn get_neighbors(pipe: Pipe, position: V2, pipes: Dict(V2, Pipe)) {
   use direction <- list.filter_map(v2.directions)
   let position = v2.add(position, direction)
   use neighbor <- result.try(dict.get(pipes, position))
+
   use candidates <- result.try({
     use pipes <- result.map(connections(into: pipe, from: direction))
     use pipe <- list.filter(pipes)
     pipe == neighbor
   })
+
   use <- bool.guard(candidates == [], Error(Nil))
   Ok(position)
 }

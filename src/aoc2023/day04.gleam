@@ -13,6 +13,7 @@ pub type Card {
 
 pub fn part1(input: String) -> Int {
   let cards = parse(input)
+
   int.sum({
     use Card(_id, matches) <- list.map(cards)
     use <- bool.guard(matches == 0, 0)
@@ -22,9 +23,7 @@ pub fn part1(input: String) -> Int {
 }
 
 pub fn part2(input: String) -> Int {
-  parse(input)
-  |> collect
-  |> list.length
+  list.length(collect(parse(input)))
 }
 
 fn collect(cards: List(Card)) -> List(Card) {
@@ -37,8 +36,10 @@ fn collect_next(
   deck: List(Card),
 ) -> List(Card) {
   let deck = list.fold(cards, deck, list.prepend)
+
   let wins = {
     use card <- list.flat_map(cards)
+
     list.split(all, card.id)
     |> pair.second
     |> list.split(card.matches)
@@ -53,6 +54,7 @@ fn parse(input: String) -> List(Card) {
   use line <- list.map(read.lines(input))
   let assert ["Card" <> id, rest] = string.split(line, ":")
   let assert Ok(id) = int.parse(string.trim(id))
+
   let assert [want, have] = {
     use part <- list.map(string.split(rest, "|"))
     string.split(part, " ")
@@ -60,8 +62,5 @@ fn parse(input: String) -> List(Card) {
     |> set.from_list
   }
 
-  let matches =
-    set.intersection(want, have)
-    |> set.size
-  Card(id, matches)
+  Card(id, set.size(set.intersection(want, have)))
 }

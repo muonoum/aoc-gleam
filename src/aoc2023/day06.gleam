@@ -42,7 +42,6 @@ pub fn part2(input: String) -> Int {
 
 fn parse(input) {
   let lines = read.lines(input)
-
   use #(times, records), line <- list.fold(lines, #([], []))
 
   case line {

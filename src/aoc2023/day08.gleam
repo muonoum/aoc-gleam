@@ -22,6 +22,7 @@ pub fn part1(input: String) -> Int {
   pair.first({
     let start = #(0, "AAA")
     use #(count, node), direction <- yielder.fold_until(directions, start)
+
     case direction, dict.get(network, node) {
       Left, Ok(#("ZZZ", _)) -> list.Stop(#(count + 1, node))
       Right, Ok(#(_, "ZZZ")) -> list.Stop(#(count + 1, node))
@@ -44,6 +45,7 @@ pub fn part2(input: String) -> Int {
     pair.first({
       let start = #(0, node)
       use #(count, node), direction <- yielder.fold_until(directions, start)
+
       let next = {
         case direction, dict.get(network, node) {
           Left, Ok(#(node, _)) -> node
@@ -65,6 +67,7 @@ pub fn part2(input: String) -> Int {
 fn parse(input: String) -> #(Yielder(Direction), Network) {
   let lines = read.lines(input)
   let assert [directions, ..lines] = lines
+
   let directions =
     string.split(directions, "")
     |> list.map(parse_direction)
@@ -75,10 +78,12 @@ fn parse(input: String) -> #(Yielder(Direction), Network) {
     use network, line <- list.fold(lines, dict.new())
     use <- bool.guard(line == "", network)
     let assert [key, pair] = read.fields(line, "=")
+
     let assert [left, right] =
       lib.remove(pair, "()")
       |> string.split(",")
       |> list.map(string.trim)
+
     dict.insert(network, key, #(left, right))
   }
 

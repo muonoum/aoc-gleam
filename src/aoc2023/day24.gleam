@@ -7,6 +7,7 @@ import lib/read
 
 pub fn part1(input: String) -> Int {
   let hail = parse(input)
+
   let #(min, max) = case list.length(hail) {
     5 -> #(7.0, 27.0)
     _ -> #(200_000_000_000_000.0, 400_000_000_000_000.0)
@@ -50,11 +51,14 @@ fn past(pv: #(V2, V2), p2: V2) -> Bool {
 pub fn parse(input: String) {
   use line <- list.map(read.lines(input))
   let assert [position, velocity] = read.fields(line, "@")
+
   let assert [px, py, _pz] =
     read.integers(position, ",")
     |> list.map(int.to_float)
+
   let assert [vx, vy, _vz] =
     read.integers(velocity, ",")
     |> list.map(int.to_float)
+
   #(V2(px, py), V2(vx, vy))
 }

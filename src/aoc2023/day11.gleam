@@ -45,12 +45,15 @@ fn expand(by factor: Int) {
 
 fn parse(input: String) -> State {
   let lines = read.lines(input)
+
   let rows = {
     use #(line, index) <- list.filter_map(list.index_map(lines, pair.new))
     use <- bool.guard(string.contains(line, "#"), Error(Nil))
     Ok(index)
   }
+
   let graphemes = list.map(lines, string.to_graphemes)
+
   let columns = {
     use #(line, index) <- list.filter_map(
       list.transpose(graphemes)

@@ -105,6 +105,7 @@ fn split_vertical(velocity: V2) -> List(V2) {
 
 fn move(light: Light, space: Space, lights: Set(Light)) {
   let assert Ok(cell) = dict.get(space.cells, light.position)
+
   let update = fn(lights, velocity) {
     case add_vectors(light.position, velocity, space.limit) {
       Ok(position) -> set.insert(lights, Light(position, velocity))
@@ -116,9 +117,11 @@ fn move(light: Light, space: Space, lights: Set(Light)) {
     EmptySpace -> update(lights, light.velocity)
     LeftMirror -> update(lights, V2(light.velocity.y, light.velocity.x))
     RightMirror -> update(lights, V2(-light.velocity.y, -light.velocity.x))
+
     HorizontalSplit ->
       split_horizontal(light.velocity)
       |> list.fold(from: lights, with: update)
+
     VerticalSplit ->
       split_vertical(light.velocity)
       |> list.fold(from: lights, with: update)
@@ -128,10 +131,12 @@ fn move(light: Light, space: Space, lights: Set(Light)) {
 fn parse(input: String) {
   let assert [first_line, ..] as lines = read.lines(input)
   let limit = V2(string.length(first_line) - 1, list.length(lines) - 1)
+
   let cells =
     list.index_map(lines, parse_line)
     |> list.flatten
     |> dict.from_list
+
   Space(cells, limit)
 }
 
