@@ -33,18 +33,22 @@ pub fn part2(input: String) -> Int {
         case a - b {
           diff if diff < -3 && dampen > 0 ->
             list.Continue(Ok(#(direction, dampen - 1)))
+
           diff if diff < -3 -> list.Stop(Error(Nil))
 
           diff if diff > 3 && dampen > 0 ->
             list.Continue(Ok(#(direction, dampen - 1)))
+
           diff if diff > 3 -> list.Stop(Error(Nil))
 
           diff if diff > 0 && direction < 0 && dampen > 0 ->
             list.Continue(Ok(#(direction, dampen - 1)))
+
           diff if diff > 0 && direction < 0 -> list.Stop(Error(Nil))
 
           diff if diff < 0 && direction > 0 && dampen > 0 ->
             list.Continue(Ok(#(direction, dampen - 1)))
+
           diff if diff < 0 && direction > 0 -> list.Stop(Error(Nil))
 
           diff if diff < 0 -> list.Continue(Ok(#(-1, dampen)))

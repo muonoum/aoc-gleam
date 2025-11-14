@@ -25,15 +25,18 @@ pub fn part1(input: String) -> Int {
 pub fn part2(input: String) -> Int {
   let rows = parse(input)
   let row_left = list.map(rows, from_inside)
+
   let row_right =
     list.map(rows, list.reverse)
     |> list.map(from_inside)
     |> list.map(list.reverse)
 
   let columns = list.transpose(rows)
+
   let column_top =
     list.map(columns, from_inside)
     |> list.transpose
+
   let column_bottom =
     list.map(columns, list.reverse)
     |> list.map(from_inside)
@@ -43,6 +46,7 @@ pub fn part2(input: String) -> Int {
   let rows = score(row_left, row_right)
   let columns = score(column_top, column_bottom)
   let all = score(rows, columns)
+
   let assert Ok(max) =
     list.flatten(all)
     |> list.reduce(int.max)
@@ -61,8 +65,10 @@ fn from_outside(slice) {
 fn from_inside(slice) {
   use _, index <- list.index_map(slice)
   let assert #(neighbors, [#(_, height), ..]) = list.split(slice, index)
+
   case list.reverse(neighbors) {
     [] -> 0
+
     neighbors -> {
       use visibility, #(_, neighbor) <- list.fold_until(neighbors, 0)
       use <- bool.guard(neighbor >= height, list.Stop(visibility + 1))

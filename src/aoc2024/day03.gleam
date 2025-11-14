@@ -37,6 +37,7 @@ pub fn part2(input: String) -> Int {
       "do()", _ -> #(sum, True)
       "don't()", _ -> #(sum, False)
       _mul, False -> #(sum, enabled)
+
       _mul, True -> {
         let assert [Some(a), Some(b)] = subs
         let assert Ok(a) = int.parse(a)
@@ -47,6 +48,6 @@ pub fn part2(input: String) -> Int {
   })
 }
 
-pub fn parse(input: String) {
+pub fn parse(input: String) -> String {
   input
 }

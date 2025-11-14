@@ -16,6 +16,7 @@ pub fn part2(input: String) -> Int {
 
 pub fn parse(input: String) -> List(Int) {
   use inventory, line <- list.fold(string.split(input, "\n"), [])
+
   case int.parse(line), inventory {
     Error(Nil), _ -> [0, ..inventory]
     Ok(calories), [] -> [calories]

@@ -86,6 +86,7 @@ fn update(
 ) -> Dict(Register, Int) {
   case instruction {
     Noop -> registers
+
     Add(register, number) -> {
       use content <- dict.upsert(registers, register)
       option.map(content, int.add(_, number))
@@ -102,6 +103,7 @@ fn render(display: Set(V2)) {
 
 fn render_row(y: Int, display: Set(V2)) {
   use x <- list.map(list.range(0, 39))
+
   case set.contains(display, V2(x, y)) {
     True -> io.print("\u{2593}")
     False -> io.print(" ")
@@ -113,10 +115,12 @@ pub fn parse(input: String) {
 
   case line {
     "noop" -> #(Noop, 1)
+
     "addx " <> number -> {
       let assert Ok(number) = int.parse(number)
       #(Add(X, number), 2)
     }
+
     _else -> panic
   }
 }

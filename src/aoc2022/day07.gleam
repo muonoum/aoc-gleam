@@ -87,6 +87,7 @@ pub fn parse(input: String) {
     "$ cd .." -> Exit
     "$ cd " <> dir -> Enter(dir)
     "$ ls" -> List
+
     entry ->
       case read.fields(entry, " ") {
         ["dir", dir] -> Directory(dir)

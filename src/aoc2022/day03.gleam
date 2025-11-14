@@ -12,6 +12,7 @@ pub type Compartment =
 pub fn part1(input: String) -> Int {
   int.sum({
     use #(a, b) <- list.flat_map(parse(input))
+
     set.intersection(a, b)
     |> set.to_list
     |> list.map(pair.second)
@@ -27,6 +28,7 @@ pub fn part2(input: String) -> Int {
   int.sum({
     use group <- list.flat_map(list.sized_chunk(sacks, 3))
     let assert [a, b, c] = group
+
     set.intersection(a, set.intersection(b, c))
     |> set.to_list
     |> list.map(pair.second)
@@ -35,6 +37,7 @@ pub fn part2(input: String) -> Int {
 
 pub fn parse(input: String) -> List(#(Compartment, Compartment)) {
   let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
   let lookup =
     dict.from_list({
       use grapheme, index <- list.index_map(string.to_graphemes(letters))

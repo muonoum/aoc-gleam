@@ -19,9 +19,11 @@ pub fn part2(input: String) -> Int {
 
 pub fn parse(input: String) {
   use line <- list.map(read.lines(input))
+
   let assert [[a, b], [c, d]] =
     read.fields(line, ",")
     |> list.map(read.integers(_, "-"))
+
   let first = set.from_list(list.range(a, b))
   let second = set.from_list(list.range(c, d))
   #(first, second)

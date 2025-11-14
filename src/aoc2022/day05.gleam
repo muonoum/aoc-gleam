@@ -56,6 +56,7 @@ pub fn parse(input: String) {
     let state = #(parse_stack, [[]])
     use #(parser, buckets), line <- list.fold(string.split(input, "\n"), state)
     let assert [bucket, ..rest] = buckets
+
     case line {
       "" -> #(parse_move, [[], ..buckets])
       line -> #(parser, [[parser(line), ..bucket], ..rest])
@@ -74,11 +75,13 @@ pub fn parse(input: String) {
   let stacks =
     dict.from_list({
       use stack, index <- list.index_map(stacks)
+
       let stack = {
         use crate <- list.filter_map(stack)
         use <- bool.guard(crate == "", Error(Nil))
         Ok(crate)
       }
+
       #(index + 1, stack)
     })
 
@@ -95,6 +98,7 @@ fn parse_move(line: String) {
   let assert [number, start, end] =
     read.fields(line, " ")
     |> list.filter_map(int.parse)
+
   Move(#(number, start, end))
 }
 
@@ -104,6 +108,7 @@ fn parse_stack(line: String) {
       string.to_graphemes(line)
       |> list.sized_chunk(4),
     )
+
     case crate {
       ["[", id, "]", " "] -> Ok(id)
       ["[", id, "]"] -> Ok(id)
