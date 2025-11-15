@@ -55,7 +55,7 @@ fn get_path(diagram: List(#(V2, Tile))) -> List(V2) {
 
   let assert Ok([start_pipe]) = {
     let candidates = {
-      use direction <- list.filter_map(v2.cardinal_directions)
+      use direction <- list.filter_map(v2.cardinals)
       let position = v2.add(start_position, direction)
       use neighbor <- result.try(dict.get(pipes, position))
       let direction = v2.invert(direction)
@@ -89,7 +89,7 @@ fn get_path(diagram: List(#(V2, Tile))) -> List(V2) {
 }
 
 fn get_neighbors(pipe: Pipe, position: V2, pipes: Dict(V2, Pipe)) {
-  use direction <- list.filter_map(v2.cardinal_directions)
+  use direction <- list.filter_map(v2.cardinals)
   let position = v2.add(position, direction)
   use neighbor <- result.try(dict.get(pipes, position))
 

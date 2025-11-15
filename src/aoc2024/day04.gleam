@@ -20,8 +20,28 @@ pub fn part1(input: String) -> Int {
   })
 }
 
-pub fn part2(_input: String) -> Int {
-  -1
+pub fn part2(input: String) -> Int {
+  let grid = parse(input)
+  let dict = dict.from_list(grid)
+
+  let ms = fn(start, direction) {
+    use _ <- result.try(find(dict, "M", #(start, direction)))
+    use _ <- result.try(find(dict, "S", #(start, v2.invert(direction))))
+    Ok(#(start, direction))
+  }
+
+  let xmas = {
+    use #(start, direction) <- list.flat_map({
+      use #(start, cell) <- list.flat_map(grid)
+      use <- bool.guard(cell != "A", [])
+      list.filter_map(v2.intercardinals, ms(start, _))
+    })
+
+    [v2.invert_x(direction), v2.invert_y(direction)]
+    |> list.filter_map(ms(start, _))
+  }
+
+  list.length(xmas) / 2
 }
 
 pub fn find(

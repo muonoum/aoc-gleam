@@ -3,7 +3,14 @@ import gleam/int.{absolute_value as abs}
 import gleam/list
 import gleam/result
 
-pub const cardinal_directions = [V2(1, 0), V2(0, -1), V2(0, 1), V2(-1, 0)]
+pub const cardinals = [V2(1, 0), V2(0, -1), V2(0, 1), V2(-1, 0)]
+
+pub const intercardinals = [
+  V2(-1, -1),
+  V2(1, -1),
+  V2(1, 1),
+  V2(-1, 1),
+]
 
 pub const directions = [
   V2(-1, -1),
@@ -33,6 +40,14 @@ pub fn invert(v: V2) -> V2 {
   V2(-v.x, -v.y)
 }
 
+pub fn invert_x(v: V2) -> V2 {
+  V2(-v.x, v.y)
+}
+
+pub fn invert_y(v: V2) -> V2 {
+  V2(v.x, -v.y)
+}
+
 pub fn grid(rows: List(List(String))) -> List(#(V2, String)) {
   list.flatten({
     use row, y <- list.index_map(rows)
@@ -42,7 +57,7 @@ pub fn grid(rows: List(List(String))) -> List(#(V2, String)) {
 }
 
 pub fn neighbors(position: V2, grid: Dict(V2, a)) -> List(#(V2, a)) {
-  use direction <- list.filter_map(cardinal_directions)
+  use direction <- list.filter_map(cardinals)
   let position = add(position, direction)
   use neighbor <- result.try(dict.get(grid, position))
   Ok(#(position, neighbor))
