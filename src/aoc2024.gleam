@@ -4,6 +4,7 @@ import aoc2024/day03
 import aoc2024/day04
 import aoc2024/day05
 import aoc2024/day06
+import aoc2024/day14
 import runner
 
 pub const days = [
@@ -13,6 +14,7 @@ pub const days = [
   #(04, #(day04.part1, day04.part2, "inputs/2024/day04.txt")),
   #(05, #(day05.part1, day05.part2, "inputs/2024/day05.txt")),
   #(06, #(day06.part1, day06.part2, "inputs/2024/day06.txt")),
+  #(14, #(day14.part1, day14.part2, "inputs/2024/day14.txt")),
 ]
 
 pub fn main() {
