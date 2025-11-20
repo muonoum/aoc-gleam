@@ -1,6 +1,7 @@
 import gleam/bool
 import gleam/dict.{type Dict}
 import gleam/int
+import gleam/io
 import gleam/list
 import gleam/pair
 import gleam/string
@@ -9,27 +10,14 @@ import lib/read
 
 pub fn part1(input: String) -> Int {
   let #(map, moves) = parse(input)
-
-  let assert [start] = {
-    use position <- filter_map(map, "@")
-    Ok(position)
-  }
+  let map = v2.grid(map) |> dict.from_list
+  let assert [start] = filter_map(map, "@", Ok)
 
   int.sum({
     let map = run(map, start, moves)
     use position <- filter_map(map, "O")
     Ok(100 * position.y + position.x)
   })
-}
-
-fn filter_map(
-  map: Dict(V2, String),
-  entity: String,
-  then: fn(V2) -> Result(v, Nil),
-) -> List(v) {
-  use #(position, cell) <- list.filter_map(dict.to_list(map))
-  use <- bool.guard(cell != entity, Error(Nil))
-  then(position)
 }
 
 fn run(map: Dict(V2, String), position: V2, moves: List(V2)) -> Dict(V2, String) {
@@ -66,13 +54,45 @@ fn move_entity(
   }
 }
 
-pub fn part2(_input: String) -> Int {
+pub fn part2(input: String) -> Int {
+  let #(map, moves) = parse(input)
+  let map = expand_map(map) |> inspect_map |> v2.grid |> dict.from_list
+  let assert [start] = filter_map(map, "@", Ok)
+
   -1
+}
+
+fn inspect_map(map: List(List(String))) -> List(List(String)) {
+  list.map(map, string.join(_, "")) |> string.join("\n") |> io.println
+  map
+}
+
+fn expand_map(map: List(List(String))) -> List(List(String)) {
+  use row <- list.map(map)
+  use cell <- list.flat_map(row)
+
+  case cell {
+    "#" -> ["#", "#"]
+    "O" -> ["[", "]"]
+    "." -> [".", "."]
+    "@" -> ["@", "."]
+    _else -> panic as cell
+  }
+}
+
+fn filter_map(
+  map: Dict(V2, a),
+  entity: a,
+  then: fn(V2) -> Result(b, Nil),
+) -> List(b) {
+  use #(position, cell) <- list.filter_map(dict.to_list(map))
+  use <- bool.guard(cell != entity, Error(Nil))
+  then(position)
 }
 
 pub fn parse(input: String) {
   let assert Ok(#(map, moves)) = string.split_once(input, "\n\n")
-  let map = dict.from_list(read.grid(map))
+  let map = read.grid(map)
 
   let moves = {
     let moves = read.fields(string.replace(moves, "\n", ""), "")
@@ -83,7 +103,7 @@ pub fn parse(input: String) {
       "<" -> V2(-1, 0)
       "^" -> V2(0, -1)
       "v" -> V2(0, 1)
-      move -> panic as move
+      _else -> panic as move
     }
   }
 
