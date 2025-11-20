@@ -192,7 +192,7 @@ pub fn parse(input: String) -> Dish {
   let limit = V2(string.length(first_line) - 1, list.length(lines) - 1)
 
   let rocks = {
-    let grid = read.grid(input)
+    let grid = read.grid(input) |> v2.grid
     use #(position, grapheme) <- list.filter_map(grid)
     parse_grapheme(grapheme, position)
   }

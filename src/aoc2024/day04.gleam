@@ -57,5 +57,5 @@ pub fn find(
 }
 
 pub fn parse(input: String) -> List(#(V2, String)) {
-  read.grid(input)
+  read.grid(input) |> v2.grid
 }

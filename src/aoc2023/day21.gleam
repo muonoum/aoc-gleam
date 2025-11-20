@@ -45,6 +45,7 @@ fn walk(grid, steps) {
 
 fn parse(input: String) {
   read.grid(input)
+  |> v2.grid
   |> list.map(parse_tile)
 }
 

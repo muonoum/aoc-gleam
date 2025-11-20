@@ -122,7 +122,7 @@ fn connections(into pipe: Pipe, from direction: V2) -> Result(List(Pipe), Nil) {
 }
 
 pub fn parse(input: String) -> List(#(V2, Tile)) {
-  use #(position, grapheme) <- list.map(read.grid(input))
+  use #(position, grapheme) <- list.map(read.grid(input) |> v2.grid)
   #(position, parse_tile(grapheme))
 }
 

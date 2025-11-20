@@ -2,7 +2,6 @@ import gleam/int
 import gleam/list
 import gleam/string
 import lib
-import lib/int/v2.{type V2, V2}
 
 pub fn lines(input: String) -> List(String) {
   use line <- list.map({
@@ -25,14 +24,11 @@ pub fn integers(string: String, separator: String) {
 }
 
 pub fn hex(string: String) {
-  string.to_graphemes(string)
-  |> list.filter_map(int.base_parse(_, 16))
+  use grapheme <- list.filter_map(string.to_graphemes(string))
+  int.base_parse(grapheme, 16)
 }
 
-pub fn grid(input: String) -> List(#(V2, String)) {
-  list.flatten({
-    use line, row <- list.index_map(lines(input))
-    use grapheme, column <- list.index_map(string.to_graphemes(line))
-    #(V2(column, row), grapheme)
-  })
+pub fn grid(input: String) -> List(List(String)) {
+  use line <- list.map(lines(input))
+  string.to_graphemes(line)
 }
