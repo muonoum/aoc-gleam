@@ -1,8 +1,24 @@
+import gleam/bool
 import gleam/dict
 import gleam/function
 import gleam/int
 import gleam/list
 import gleam/string
+
+pub fn power(base, exponent) {
+  power_loop(base, exponent, 1)
+}
+
+fn power_loop(base, exponent, result) {
+  let result = {
+    use <- bool.guard(int.bitwise_and(exponent, 1) == 0, result)
+    result * base
+  }
+
+  let exponent = int.bitwise_shift_right(exponent, 1)
+  use <- bool.guard(exponent == 0, result)
+  power_loop(base * base, exponent, result)
+}
 
 pub fn digits(v: Int, base: Int) -> Result(List(Int), Nil) {
   case base < 2 {
