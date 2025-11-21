@@ -5,11 +5,11 @@ import gleam/int
 import gleam/list
 import gleam/string
 
-pub fn power(base, exponent) {
+pub fn power(base: Int, exponent: Int) -> Int {
   power_loop(base, exponent, 1)
 }
 
-fn power_loop(base, exponent, result) {
+fn power_loop(base: Int, exponent: Int, result: Int) -> Int {
   let result = {
     use <- bool.guard(int.bitwise_and(exponent, 1) == 0, result)
     result * base

@@ -1,7 +1,9 @@
+import gleam/bool
 import gleam/dict.{type Dict}
 import gleam/int
 import gleam/io
 import gleam/list
+import gleam/pair
 import gleam/string
 import lib
 import lib/read
@@ -47,32 +49,24 @@ fn run(
   let opcode = dict.get(program, counter)
   let operand = dict.get(program, counter + 1)
 
+  let dv = fn(operand, put) {
+    let result = ax / lib.power(2, get_combo(registers, operand))
+    run(put(registers, result), program, counter + 2, output)
+  }
+
+  let xor = fn(operand, put) {
+    let result = int.bitwise_exclusive_or(bx, operand)
+    run(put(registers, result), program, counter + 2, output)
+  }
+
   case opcode, operand {
     Error(Nil), _operand -> list.reverse(output)
-
-    Ok(0), Ok(operand) -> {
-      let result = ax / lib.power(2, get_combo(registers, operand))
-      put_ax(registers, result) |> run(program, counter + 2, output)
-    }
-
-    Ok(6), Ok(operand) -> {
-      let result = ax / lib.power(2, get_combo(registers, operand))
-      put_bx(registers, result) |> run(program, counter + 2, output)
-    }
-
-    Ok(7), Ok(operand) -> {
-      let result = ax / lib.power(2, get_combo(registers, operand))
-      put_cx(registers, result) |> run(program, counter + 2, output)
-    }
-
-    Ok(1), Ok(operand) -> {
-      let result = int.bitwise_exclusive_or(bx, operand)
-      put_bx(registers, result) |> run(program, counter + 2, output)
-    }
+    Ok(0), Ok(operand) -> dv(operand, put_ax)
+    Ok(1), Ok(operand) -> xor(operand, put_bx)
 
     Ok(2), Ok(operand) -> {
       let operand = get_combo(registers, operand)
-      put_bx(registers, operand % 8) |> run(program, counter + 2, output)
+      run(put_bx(registers, operand % 8), program, counter + 2, output)
     }
 
     Ok(3), Ok(operand) -> {
@@ -82,16 +76,15 @@ fn run(
       }
     }
 
-    Ok(4), Ok(_operand) -> {
-      let result = int.bitwise_exclusive_or(bx, cx)
-      put_bx(registers, result) |> run(program, counter + 2, output)
-    }
+    Ok(4), Ok(_operand) -> xor(cx, put_bx)
 
     Ok(5), Ok(operand) -> {
       let operand = get_combo(registers, operand)
       run(registers, program, counter + 2, [operand % 8, ..output])
     }
 
+    Ok(6), Ok(operand) -> dv(operand, put_bx)
+    Ok(7), Ok(operand) -> dv(operand, put_cx)
     _opcode, Error(Nil) -> panic as "missing operand"
     Ok(_opcode), _operand -> panic as "unknown opcode"
   }
@@ -107,30 +100,34 @@ fn get_combo(registers: Registers, operand: Int) -> Int {
   }
 }
 
-pub fn parse(input: String) {
-  let registers = Registers(ax: 0, bx: 0, cx: 0)
-  use #(registers, program) as state, line <- list.fold(read.lines(input), {
-    #(registers, dict.new())
-  })
+pub fn parse(input: String) -> #(Registers, Dict(Int, Int)) {
+  parse_loop(read.lines(input), Registers(ax: 0, bx: 0, cx: 0), dict.new())
+}
 
-  let put = fn(into, value) {
+fn parse_loop(
+  lines: List(String),
+  registers: Registers,
+  program: Dict(Int, Int),
+) -> #(Registers, Dict(Int, Int)) {
+  use <- bool.guard(lines == [], #(registers, program))
+  let assert [line, ..lines] = lines
+
+  let parse_register = fn(into, value) {
     let assert Ok(value) = int.parse(value)
-    into(registers, value)
+    parse_loop(lines, into(registers, value), program)
+  }
+
+  let parse_program = fn(program) {
+    let program = list.index_map(read.integers(program, ","), pair.new)
+    parse_loop(lines, registers, dict.from_list(list.map(program, pair.swap)))
   }
 
   case line {
-    "" -> state
-    "Register A: " <> value -> #(put(put_ax, value), program)
-    "Register B: " <> value -> #(put(put_bx, value), program)
-    "Register C: " <> value -> #(put(put_cx, value), program)
-    "Program: " <> program -> #(registers, parse_program(program))
+    "" -> parse_loop(lines, registers, program)
+    "Register A: " <> value -> parse_register(put_ax, value)
+    "Register B: " <> value -> parse_register(put_bx, value)
+    "Register C: " <> value -> parse_register(put_cx, value)
+    "Program: " <> program -> parse_program(program)
     _else -> panic
   }
-}
-
-fn parse_program(program: String) {
-  dict.from_list({
-    use step, index <- list.index_map(read.integers(program, ","))
-    #(index, step)
-  })
 }

@@ -1,5 +1,6 @@
 import gleam/bool
 import gleam/dict.{type Dict}
+import gleam/function.{identity}
 import gleam/int
 import gleam/io
 import gleam/list
@@ -9,44 +10,48 @@ import lib/int/v2.{type V2, V2}
 import lib/read
 
 pub fn part1(input: String) -> Int {
-  let #(map, moves) = parse(input)
-  let map = v2.grid(map) |> dict.from_list
-  let assert [start] = filter_map(map, "@", Ok)
+  let #(initial_map, moves) = parse(input)
+  let map = v2.grid(initial_map) |> dict.from_list
+  let assert [start] = find_entity(map, "@", identity)
+  let final_map = run1(map, start, moves)
 
   int.sum({
-    let map = run(map, start, moves)
-    use position <- filter_map(map, "O")
-    Ok(100 * position.y + position.x)
+    use V2(x:, y:) <- find_entity(final_map, "O")
+    100 * y + x
   })
 }
 
-fn run(map: Dict(V2, String), position: V2, moves: List(V2)) -> Dict(V2, String) {
+fn run1(
+  map: Dict(V2, String),
+  position: V2,
+  moves: List(V2),
+) -> Dict(V2, String) {
   use <- bool.guard(moves == [], map)
   let assert [move, ..moves] = moves
-  let #(map, position) = move_entity(map, position, move)
-  run(map, position, moves)
+  let #(map, position) = move1(map, position, move)
+  run1(map, position, moves)
 }
 
-fn move_entity(
+fn move1(
   map: Dict(V2, String),
   position: V2,
   velocity: V2,
 ) -> #(Dict(V2, String), V2) {
   let next = v2.add(position, velocity)
 
-  let put = fn(map, entity) {
+  let swap = fn(map, entity) {
     dict.insert(map, position, ".")
     |> dict.insert(next, entity)
     |> pair.new(next)
   }
 
   case dict.get(map, position), dict.get(map, next) {
-    Ok("@" as entity), Ok(".") | Ok("O" as entity), Ok(".") -> put(map, entity)
+    Ok("@" as entity), Ok(".") | Ok("O" as entity), Ok(".") -> swap(map, entity)
 
     Ok("@" as entity), Ok("O") | Ok("O" as entity), Ok("O") -> {
-      let #(map, next2) = move_entity(map, next, velocity)
+      let #(map, next2) = move1(map, next, velocity)
       use <- bool.guard(next == next2, #(map, position))
-      put(map, entity)
+      swap(map, entity)
     }
 
     Ok("@"), Ok("#") | Ok("O"), Ok("#") -> #(map, position)
@@ -80,14 +85,10 @@ fn expand_map(map: List(List(String))) -> List(List(String)) {
   }
 }
 
-fn filter_map(
-  map: Dict(V2, a),
-  entity: a,
-  then: fn(V2) -> Result(b, Nil),
-) -> List(b) {
+fn find_entity(map: Dict(V2, a), entity: a, then: fn(V2) -> b) -> List(b) {
   use #(position, cell) <- list.filter_map(dict.to_list(map))
   use <- bool.guard(cell != entity, Error(Nil))
-  then(position)
+  Ok(then(position))
 }
 
 pub fn parse(input: String) {

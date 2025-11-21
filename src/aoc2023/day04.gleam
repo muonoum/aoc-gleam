@@ -1,10 +1,10 @@
 import gleam/bool
-import gleam/float
 import gleam/int
 import gleam/list
 import gleam/pair
 import gleam/set
 import gleam/string
+import lib
 import lib/read
 
 pub type Card {
@@ -17,8 +17,7 @@ pub fn part1(input: String) -> Int {
   int.sum({
     use Card(_id, matches) <- list.map(cards)
     use <- bool.guard(matches == 0, 0)
-    let assert Ok(points) = int.power(2, int.to_float(matches - 1))
-    float.round(points)
+    lib.power(2, matches - 1)
   })
 }
 
