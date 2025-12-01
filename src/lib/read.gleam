@@ -18,6 +18,11 @@ pub fn fields(string: String, separator: String) {
   |> list.filter(lib.non_empty_string)
 }
 
+pub fn integer(string: String) -> Int {
+  let assert Ok(integer) = int.parse(string)
+  integer
+}
+
 pub fn integers(string: String, separator: String) {
   fields(string, separator)
   |> list.filter_map(int.parse)
