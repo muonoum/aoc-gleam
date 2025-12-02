@@ -38,7 +38,7 @@ fn unlock2(turns: List(Turn), state: State) -> Int {
   }
 }
 
-pub fn parse(input: String) -> List(Turn) {
+fn parse(input: String) -> List(Turn) {
   use line <- list.map(read.lines(input))
 
   case line {

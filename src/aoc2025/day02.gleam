@@ -23,7 +23,7 @@ fn solve(input: String, pattern: String) -> Int {
   })
 }
 
-pub fn parse(input: String) -> List(List(Int)) {
+fn parse(input: String) -> List(List(Int)) {
   use range <- list.map(read.fields(input, ","))
   let assert [start, end] = list.map(string.split(range, "-"), read.integer)
   list.range(start, end)
