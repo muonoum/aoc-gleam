@@ -1,7 +1,6 @@
 import gleam/dict
 import gleam/function
 import gleam/int
-import gleam/io
 import gleam/list
 import gleam/string
 import lib/int/v2.{type V2, V2}
