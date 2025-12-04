@@ -1,7 +1,7 @@
 import gleam/list
 import gleam/string
 
-pub fn part1(input: String) {
+pub fn part1(input: String) -> Int {
   use floor, grapheme <- list.fold(string.to_graphemes(input), 0)
 
   case grapheme {
@@ -11,7 +11,7 @@ pub fn part1(input: String) {
   }
 }
 
-pub fn part2(input: String) {
+pub fn part2(input: String) -> Int {
   let instructions = {
     use grapheme, index <- list.index_map(string.to_graphemes(input))
     #(index + 1, grapheme)

@@ -16,13 +16,13 @@ fn solve(input: String, pattern: String) -> Int {
   int.sum({
     let assert Ok(pattern) = regexp.from_string(pattern)
     use range <- list.flat_map(parse(input))
-    use number <- list.filter(range)
-    regexp.check(pattern, int.to_string(number))
+    use id <- list.filter(range)
+    regexp.check(pattern, int.to_string(id))
   })
 }
 
 fn parse(input: String) -> List(List(Int)) {
   use range <- list.map(read.fields(input, ","))
-  let assert [start, end] = list.map(string.split(range, "-"), read.integer)
-  list.range(start, end)
+  let assert [first, last] = list.map(string.split(range, "-"), read.integer)
+  list.range(first, last)
 }

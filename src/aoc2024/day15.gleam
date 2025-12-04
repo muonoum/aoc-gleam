@@ -12,11 +12,11 @@ import lib/read
 pub fn part1(input: String) -> Int {
   let #(initial_map, moves) = parse(input)
   let map = v2.grid(initial_map) |> dict.from_list
-  let assert [start] = find_entity(map, "@", identity)
+  let assert [start] = map_entity(map, "@", identity)
   let final_map = run1(map, start, moves)
 
   int.sum({
-    use V2(x:, y:) <- find_entity(final_map, "O")
+    use V2(x:, y:) <- map_entity(final_map, "O")
     100 * y + x
   })
 }
@@ -85,7 +85,7 @@ fn expand_map(map: List(List(String))) -> List(List(String)) {
   }
 }
 
-fn find_entity(map: Dict(V2, a), entity: a, then: fn(V2) -> b) -> List(b) {
+fn map_entity(map: Dict(V2, a), entity: a, then: fn(V2) -> b) -> List(b) {
   use #(position, cell) <- list.filter_map(dict.to_list(map))
   use <- bool.guard(cell != entity, Error(Nil))
   Ok(then(position))

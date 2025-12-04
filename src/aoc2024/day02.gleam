@@ -5,6 +5,7 @@ import lib/read
 
 pub fn part1(input: String) -> Int {
   use count, report <- list.fold(parse(input), 0)
+
   let diff = {
     use #(current, last) <- list.map(list.window_by_2(report))
     last - current
