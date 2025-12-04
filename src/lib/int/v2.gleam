@@ -17,7 +17,6 @@ pub const directions = [
   V2(0, -1),
   V2(1, -1),
   V2(-1, 0),
-  V2(0, 0),
   V2(1, 0),
   V2(-1, 1),
   V2(0, 1),
@@ -56,8 +55,12 @@ pub fn grid(rows: List(List(String))) -> List(#(V2, String)) {
   })
 }
 
-pub fn neighbors(position: V2, grid: Dict(V2, a)) -> List(#(V2, a)) {
-  use direction <- list.filter_map(cardinals)
+pub fn neighbors(
+  position: V2,
+  grid: Dict(V2, a),
+  directions: List(V2),
+) -> List(#(V2, a)) {
+  use direction <- list.filter_map(directions)
   let position = add(position, direction)
   use neighbor <- result.try(dict.get(grid, position))
   Ok(#(position, neighbor))

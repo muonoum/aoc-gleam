@@ -35,7 +35,8 @@ fn walk(grid, steps) {
   let next =
     set.from_list({
       use position <- list.flat_map(positions)
-      use #(neighbor, tile) <- list.filter_map(v2.neighbors(position, grid))
+      let neighbors = v2.neighbors(position, grid, v2.cardinals)
+      use #(neighbor, tile) <- list.filter_map(neighbors)
       use <- bool.guard(tile == Rock, Error(Nil))
       Ok(neighbor)
     })
