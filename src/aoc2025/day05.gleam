@@ -1,7 +1,9 @@
 import gleam/bool
 import gleam/int
 import gleam/list
+import gleam/pair
 import gleam/string
+import lib.{return}
 import lib/read
 
 pub type Range =
@@ -25,16 +27,13 @@ fn check(value: Int, ranges: List(Range)) -> Result(Int, Nil) {
 }
 
 pub fn part2(input: String) -> Int {
-  let #(ranges, _available) = parse(input)
-
   int.sum({
-    let sorted = {
-      use #(a, _), #(b, _) <- list.sort(ranges)
+    use #(first, last) <- list.map({
+      use <- return(list.fold(_, [], merge))
+      use #(a, _), #(b, _) <- list.sort(pair.first(parse(input)))
       int.compare(a, b)
-    }
+    })
 
-    let merged = list.fold(sorted, [], merge)
-    use #(first, last) <- list.map(merged)
     last + 1 - first
   })
 }
