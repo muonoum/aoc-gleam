@@ -10,5 +10,5 @@ pub const days = [
 ]
 
 pub fn main() {
-  runner.run(days)
+  runner.run(2019, days)
 }
