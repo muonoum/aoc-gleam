@@ -15,7 +15,6 @@ import aoc2023/day15
 import aoc2023/day16
 import aoc2023/day18
 import aoc2023/day19
-import aoc2023/day20
 import aoc2023/day21
 import aoc2023/day24
 import aoc2023/day25
@@ -40,7 +39,6 @@ pub fn main() {
     #(16, #(day16.part1, day16.part2)),
     #(18, #(day18.part1, day18.part2)),
     #(19, #(day19.part1, day19.part2)),
-    #(20, #(day20.part1, day21.part2)),
     #(21, #(day21.part1, day21.part2)),
     #(24, #(day24.part1, day24.part2)),
     #(25, #(day25.part1, day25.part2)),
