@@ -62,7 +62,7 @@ fn move1(
 pub fn part2(input: String) -> Int {
   let #(map, _moves) = parse(input)
   let map = expand_map(map) |> inspect_map |> v2.grid |> dict.from_list
-  let assert [_start] = find_entity(map, "@", Ok)
+  let assert [_start] = map_entity(map, "@", Ok)
 
   -1
 }
